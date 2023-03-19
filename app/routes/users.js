@@ -75,6 +75,15 @@ router.post(
  * Change password route
  */
 router.post(
+  '/change_email',
+  trimRequest.all,
+  validate.changeEmail,
+  controller.changeEmail
+)
+/*
+ * Change password route
+ */
+router.post(
   '/change_password',
   trimRequest.all,
   validate.changePassword,

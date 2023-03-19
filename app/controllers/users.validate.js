@@ -121,6 +121,23 @@ exports.changeMobile = [
     validationResult(req, res, next)
   }
 ]
+exports.changeEmail = [
+  check('user_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  check('email')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]
 exports.changePassword = [
   check('user_id')
     .exists()
