@@ -71,5 +71,14 @@ router.post(
   validate.changeMobile,
   controller.changeMobile
 )
+/*
+ * Change password route
+ */
+router.post(
+  '/change_password',
+  trimRequest.all,
+  validate.changePassword,
+  controller.changePassword
+)
 
 module.exports = router

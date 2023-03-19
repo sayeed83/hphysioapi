@@ -94,6 +94,17 @@ exports.changeMobile = async (req, res) => {
   }
 }
 
+exports.changePassword = async (req, res) => {
+  try {
+    req = matchedData(req);
+    let query = `UPDATE USERS SET password = '${req.password}' WHERE id = ${req.user_id}`;
+    await utils.executeQuery(query);
+    res.status(200).json(successData);
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
 /**
  * Create item function called by route
  * @param {Object} req - request object
