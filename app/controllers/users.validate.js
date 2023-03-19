@@ -104,6 +104,23 @@ exports.updateItem = [
     validationResult(req, res, next)
   }
 ]
+exports.changeMobile = [
+  check('user_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  check('mobile_no')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]
 
 /**
  * Validates get item request

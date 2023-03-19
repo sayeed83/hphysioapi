@@ -78,6 +78,21 @@ exports.updateItem = async (req, res) => {
     utils.handleError(res, error)
   }
 }
+/**
+ * Change Mobile function called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.changeMobile = async (req, res) => {
+  try {
+    req = matchedData(req);
+    let query = `UPDATE USERS SET mobile_no = '${req.mobile_no}' WHERE id = ${req.user_id}`;
+    await utils.executeQuery(query);
+    res.status(200).json(successData);
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
 
 /**
  * Create item function called by route

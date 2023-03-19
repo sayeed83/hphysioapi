@@ -62,5 +62,14 @@ router.delete(
   validate.deleteItem,
   controller.deleteItem
 )
+/*
+ * Change mobile route
+ */
+router.post(
+  '/change_mobile',
+  trimRequest.all,
+  validate.changeMobile,
+  controller.changeMobile
+)
 
 module.exports = router
