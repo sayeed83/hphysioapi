@@ -12,13 +12,7 @@ exports.createItem = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
-  check('data')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .trim(),
+  check('data.*'),
   check('urlTwitter')
     .optional()
     .custom((v) => (v === '' ? true : validator.isURL(v)))

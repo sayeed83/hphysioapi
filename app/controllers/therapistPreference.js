@@ -228,19 +228,16 @@ const createItem = async (req) => {
     var moment = require('moment');
     var created_at = moment().format('YYYY-MM-DD H:i:S');
     var arr = req.data;
-    
-    console.log(JSON.stringify(arr));
+    let registerQuery = `INSERT INTO therapist_pref (user_id, service_id, service_charge, created_at, updated_at) VALUES`;
+
     for (var arrayIndex in arr) {
-        var service_id = arr[arrayIndex][0];
-        var service_charge = arr[arrayIndex][1];
-        console.log(service_id)
-    let registerQuery = `
-		INSERT INTO therapist_pref (user_id, service_id, service_charge, created_at, updated_at) 
-		VALUES ('${req.user_id}', 'arr[arrayIndex][0]', '${arr[arrayIndex][1]}','${created_at}','${created_at}');
-        `;
-        resolve(utils.executeQuery(registerQuery));
-    }
-    
+        var service_id = arr[arrayIndex]['service_id'];
+        var service_charge = arr[arrayIndex]['service_charge'];
+        registerQuery += `('${req.user_id}', '${service_id}', '${service_charge}','${created_at}','${created_at}'),`;
+      }
+      registerQuery1 = registerQuery.substring(0, registerQuery.length-1);
+      resolve(utils.executeQuery(registerQuery1));
+      
   })
 }
 
@@ -480,7 +477,6 @@ exports.createItem = async (req, res) => {
       // Gets locale from header 'Accept-Language'
         const locale = req.getLocale()
         req = matchedData(req)
-        console.log(console.log(JSON.stringify(req)));
         const item = await createItem(req)
         if(res.status(201))
         {
