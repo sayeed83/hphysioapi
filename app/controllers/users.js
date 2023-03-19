@@ -94,6 +94,16 @@ exports.changeMobile = async (req, res) => {
   }
 }
 
+exports.updateProfile = async (req, res) => {
+  try {
+    req = matchedData(req);
+    let query = `UPDATE USERS SET full_name = '${req.name}',dob='${req.dob}',city='${req.city}',state='${req.state}',address='${req.address}' WHERE id = ${req.user_id}`;
+    await utils.executeQuery(query);
+    res.status(200).json(successData);
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
 exports.changeEmail = async (req, res) => {
   try {
     req = matchedData(req);

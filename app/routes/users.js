@@ -81,6 +81,15 @@ router.post(
   controller.changeEmail
 )
 /*
+ * Update Profile password route
+ */
+router.post(
+  '/update_profile',
+  trimRequest.all,
+  validate.updateProfile,
+  controller.updateProfile
+)
+/*
  * Change password route
  */
 router.post(
