@@ -10,6 +10,7 @@ const auth = require('../middleware/auth')
 const emailer = require('../middleware/emailer')
 const moment = require("moment");
 let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
+let failedData = {message: 'Faild', totalRecord: 0, data: [], status: 401}
 const HOURS_TO_BLOCK = 2
 const LOGIN_ATTEMPTS = 5
 
@@ -277,10 +278,35 @@ exports.sendOtp = async (req, res) => {
     {
       var id = item.insertId
       const query = `select * from verify_otp WHERE id = ${id}`;
-      let tempData = await utils.executeQuery(query);
+      let tempData = await utils.executeQuery(query);      
       successData.data = tempData;
       successData.totalRecord = tempData.length;
       res.status(201).json(successData);
+    }
+    
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+
+exports.verifyOtp = async (req, res) => {
+  try {
+    // Gets locale from header 'Accept-Language'
+    const locale = req.getLocale();
+    req = matchedData(req)
+    var id = req.id
+    var otp = req.otp
+    const query = `select * from verify_otp WHERE id = ${id} AND otp = ${otp}`;
+    let tempData = await utils.executeQuery(query);
+    if(tempData.length > 0)
+    {
+      const update_q = `update verify_otp SET status='1' WHERE id = ${id}`;
+      let tempData1 = await utils.executeQuery(update_q);
+      successData.data = tempData;
+      successData.totalRecord = tempData.length;
+      res.status(201).json(successData);
+    } else {
+      res.status(201).json(failedData);      
     }
     
   } catch (error) {

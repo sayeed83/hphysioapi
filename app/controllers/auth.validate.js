@@ -101,6 +101,23 @@ exports.sendOtp = [
     validationResult(req, res, next)
   }
 ]
+exports.verifyOtp = [
+  check('id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  check('otp')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]
 
 /**
  * Validates login request

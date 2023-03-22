@@ -75,6 +75,15 @@ router.post(
   validate.sendOtp,
   controller.sendOtp
 )
+/*
+ * Register route
+ */
+router.post(
+  '/verifyOtp',
+  trimRequest.all,
+  validate.verifyOtp,
+  controller.verifyOtp
+)
 
 
 module.exports = router
