@@ -66,4 +66,15 @@ router.get(
 router.post('/login', trimRequest.all, validate.login, controller.login)
 // router.post('/login', trimRequest.all, controller.login)
 
+/*
+ * Register route
+ */
+router.post(
+  '/sendOtp',
+  trimRequest.all,
+  validate.sendOtp,
+  controller.sendOtp
+)
+
+
 module.exports = router

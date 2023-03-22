@@ -9,6 +9,7 @@ const { matchedData } = require('express-validator')
 const auth = require('../middleware/auth')
 const emailer = require('../middleware/emailer')
 const moment = require("moment");
+let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
 const HOURS_TO_BLOCK = 2
 const LOGIN_ATTEMPTS = 5
 
@@ -242,6 +243,49 @@ const registerUser = async (req) => {
     resolve(utils.executeQuery(registerQuery));
     
   })
+}
+/**
+ * Registers a new user in database
+ * @param {Object} req - request object
+ */
+const sendOtp = async (req) => {
+  return new Promise((resolve, reject) => {
+    const user = {
+      send_to: req.send_to,
+      type: req.type,
+      reference: req.reference
+    }
+    let otp = Math.floor((Math.random() * 10000));
+    var moment = require('moment');
+    var created_at = moment().format('YYYY-MM-DD H:i:S');
+    let registerQuery = `
+		INSERT INTO verify_otp (send_to,type,otp,reference,created_at,updated_at) 
+		VALUES ('${req.send_to}', '${req.type}', '${otp}', '${req.reference}','${created_at}','${created_at}');
+	`;
+    resolve(utils.executeQuery(registerQuery));
+    
+  })
+}
+
+exports.sendOtp = async (req, res) => {
+  try {
+    // Gets locale from header 'Accept-Language'
+    const locale = req.getLocale();
+    req = matchedData(req)
+    const item = await sendOtp(req);
+    if(item.insertId)
+    {
+      var id = item.insertId
+      const query = `select * from verify_otp WHERE id = ${id}`;
+      let tempData = await utils.executeQuery(query);
+      successData.data = tempData;
+      successData.totalRecord = tempData.length;
+      res.status(201).json(successData);
+    }
+    
+  } catch (error) {
+    utils.handleError(res, error)
+  }
 }
 
 /**
