@@ -95,7 +95,7 @@ exports.getAllItems = async (req, res) => {
  */
 exports.getAllItems = async (req, res) => {
   try {
-    const query = `select * from specialization`;
+    const query = `select * from services`;
     let tempData = await utils.executeQuery(query);
     successData.data = tempData;
     successData.totalRecord = tempData.length;

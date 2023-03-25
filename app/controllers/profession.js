@@ -231,7 +231,7 @@ const createItem = async (req) => {
     var moment = require('moment');
     var created_at = moment().format('YYYY-MM-DD H:i:S');
     let registerQuery = `
-		INSERT INTO professional_info (user_id, specialization_id, state_of_practice, reg_no, validity, created_at, updated_at) 
+		INSERT INTO professional_info (user_id, service_id, state_of_practice, reg_no, validity, created_at, updated_at) 
 		VALUES ('${req.user_id}', '${req.specialization_id}', '${req.state_of_practice}', '${req.reg_no}', '${req.validity}','${created_at}','${created_at}');
 	`;
     resolve(utils.executeQuery(registerQuery));
