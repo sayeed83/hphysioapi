@@ -18,15 +18,16 @@ const mysqlConfig = {
   port: process.env.DB_PORT
 };
 
+
 // Create an SSH tunnel
 const sshTunnel = new Client();
 const connectionPromise = new Promise((resolve, reject) => {
   sshTunnel.on('ready', () => {
     sshTunnel.forwardOut(
       // source IP
-      '127.0.0.1',
+      process.env.SOURCE_IP,
       // source port
-      3306,
+      process.env.DB_PORT,
       // destination IP
       mysqlConfig.host,
       // destination port
