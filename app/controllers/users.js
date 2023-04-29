@@ -32,7 +32,7 @@ const createItem = async (req) => {
  */
 exports.getItems = async (req, res) => {
   try {
-    const query = `select * from USERS`;
+    const query = `select * from users`;
     let tempData = await utils.executeQuery(query);
     successData.data = tempData;
     successData.totalRecord = tempData.length;
