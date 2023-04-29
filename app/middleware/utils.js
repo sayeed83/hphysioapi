@@ -1,8 +1,6 @@
-const mongoose = require('mongoose')
-const requestIp = require('request-ip')
-const { validationResult } = require('express-validator')
-const con = require('../../config/mysql')
-
+const requestIp = require('request-ip');
+const { validationResult } = require('express-validator');
+const con = require('../../config/mysql');
 /**
  * Removes extension from file
  * @param {string} file - filename
@@ -94,10 +92,7 @@ exports.buildSuccObject = (message) => {
  */
 exports.isIDGood = async (id) => {
   return new Promise((resolve, reject) => {
-    const goodID = mongoose.Types.ObjectId.isValid(id)
-    return goodID
-      ? resolve(id)
-      : reject(this.buildErrObject(422, 'ID_MALFORMED'))
+    resolve('1');
   })
 }
 
@@ -134,11 +129,20 @@ exports.itemAlreadyExists = (err, item, reject, message) => {
   }
 }
 
+// const getConnection = () => {
+
+// }
+
+exports.getConnection = async (sqlQuery) => {
+    return connection = await con();
+}
+
 exports.executeQuery = async (sqlQuery) => {
+    const con = await this.getConnection();
   	console.log("sqlQuery :: ", sqlQuery);
-  	return new Promise((resolve, reject) => {
+  	return new Promise(async(resolve, reject) => {
 		try {
-			con.query(sqlQuery, (error, results, fields) => {
+		    con.query(sqlQuery, (error, results, fields) => {
 				if (error) {
 				  console.log("sql error :: ", error);
 				  reject(error);
