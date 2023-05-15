@@ -137,12 +137,12 @@ exports.getConnection = async (sqlQuery) => {
     return connection = await con();
 }
 
-exports.executeQuery = async (sqlQuery) => {
+exports.executeQuery = async (sqlQuery, values) => {
     const con = await this.getConnection();
-  	console.log("sqlQuery :: ", sqlQuery);
+  	// console.log("sqlQuery :: ", sqlQuery);
   	return new Promise(async(resolve, reject) => {
 		try {
-		    con.query(sqlQuery, (error, results, fields) => {
+		    con.query(sqlQuery,[values], (error, results, fields) => {
 				if (error) {
 				  console.log("sql error :: ", error);
 				  reject(error);
@@ -158,4 +158,15 @@ exports.executeQuery = async (sqlQuery) => {
 		}
 		
   	});
+};
+
+exports.generateOTP = () => {
+    // const min = 10000;
+    // const max = 99999;
+    // const otp = Math.floor(Math.random() * (max - min + 1)) + min;
+    
+    const min = 100000;
+    const max = 999999;
+    const otp = Math.floor(Math.random() * (max - min + 1)) + min;
+    return otp;
 };

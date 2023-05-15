@@ -64,7 +64,6 @@ router.get(
  * Login route
  */
 router.post('/login', trimRequest.all, validate.login, controller.login)
-// router.post('/login', trimRequest.all, controller.login)
 
 /*
  * Register route
@@ -85,5 +84,18 @@ router.post(
   controller.verifyOtp
 )
 
+router.post(
+    '/verifyMobile',
+    trimRequest.all,
+    validate.verifyMobile,
+    controller.verifyMobile
+)
+
+router.post(
+    '/verifyEmail',
+    trimRequest.all,
+    validate.verifyEmail,
+    controller.verifyEmail
+)
 
 module.exports = router
