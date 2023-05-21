@@ -6,7 +6,34 @@ const { check } = require('express-validator')
  * Validates create new item request
  */
 exports.createItem = [
-  check('name')
+  check('first_name')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+    check('last_name')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+
+    check('middle_name')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+
+    check('degree')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+
+    check('degree')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -30,15 +57,15 @@ exports.createItem = [
       min: 5
     })
     .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
-  check('role')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
-    .isIn(['user', 'admin'])
-    .withMessage('USER_NOT_IN_KNOWN_ROLE'),
-  check('phone')
+//   check('role')
+//     .exists()
+//     .withMessage('MISSING')
+//     .not()
+//     .isEmpty()
+//     .withMessage('IS_EMPTY')
+//     .isIn(['Therapist', 'customer'])
+//     .withMessage('USER_NOT_IN_KNOWN_ROLE'),
+  check('mobile_no')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -52,13 +79,45 @@ exports.createItem = [
     .isEmpty()
     .withMessage('IS_EMPTY')
     .trim(),
-  check('country')
+
+    check('council_registration_number')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY')
     .trim(),
+
+    check('dob')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .trim(),
+
+    check('preferences')
+    .optional(),
+
+    check('qualification')
+    .optional()
+    .trim(),
+
+    check('sate_of_practice')
+    .optional()
+    .trim(),
+
+    check('specialization')
+    .optional()
+    .trim(),
+
+    check('userType')
+    .optional()
+    .trim(),
+
+    check('docs')
+    .optional(),
+
   check('urlTwitter')
     .optional()
     .custom((v) => (v === '' ? true : validator.isURL(v)))
@@ -76,7 +135,7 @@ exports.createItem = [
  * Validates update item request
  */
 exports.updateItem = [
-  check('fullName')
+  check('first_name')
     .exists()
     .withMessage('MISSING')
     .not()

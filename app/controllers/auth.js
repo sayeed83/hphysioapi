@@ -10,7 +10,7 @@ const auth = require('../middleware/auth')
 const emailer = require('../middleware/emailer')
 const moment = require("moment");
 let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
-let failedData = {message: 'Faild', totalRecord: 0, data: [], status: 401}
+let failedData = {message: 'Faild', totalRecord: 0, data: [], status: 401, message: 'Something went wrong!'}
 const HOURS_TO_BLOCK = 2
 const LOGIN_ATTEMPTS = 5
 
@@ -46,7 +46,6 @@ const generateToken = (user) => {
  * @param {Object} req - request object
  */
 const setUserInfo = (req) => {
-	// console.log(" req ", req);
   let user = {
     name: req.fullName,
     email: req.email
@@ -256,14 +255,16 @@ const sendOtp = async (req) => {
       type: req.type,
       reference: req.reference
     }
-    let otp = Math.floor((Math.random() * 10000));
-    var moment = require('moment');
+    // let otp = Math.floor((Math.random() * 10000));
+    let otp = 123456;//utils.generateOTP();
+    // var moment = require('moment');
     var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-    let registerQuery = `
-		INSERT INTO verify_otp (send_to,type,otp,reference,created_at,updated_at) 
-		VALUES ('${req.send_to}', '${req.type}', '${otp}', '${req.reference}','${created_at}','${created_at}');
+    let verifyOptQuery = `
+		INSERT INTO verify_otp (user_id, send_to,type,otp,reference,created_at,updated_at) 
+		VALUES (${req.user_id},'${req.send_to}', '${req.type}', '${otp}', '${req.reference}','${created_at}','${created_at}');
 	`;
-    resolve(utils.executeQuery(registerQuery));
+    let data = utils.executeQuery(verifyOptQuery);
+    resolve(data);
     
   })
 }
@@ -276,12 +277,12 @@ exports.sendOtp = async (req, res) => {
     const item = await sendOtp(req);
     if(item.insertId)
     {
-      var id = item.insertId
-      const query = `select * from verify_otp WHERE id = ${id}`;
+        //   var id = item.insertId
+      const query = `select * from verify_otp WHERE id = ${item.insertId}`;
       let tempData = await utils.executeQuery(query);      
       successData.data = tempData;
       successData.totalRecord = tempData.length;
-      res.status(201).json(successData);
+      res.status(200).json(successData);
     }
     
   } catch (error) {
@@ -294,24 +295,64 @@ exports.verifyOtp = async (req, res) => {
     // Gets locale from header 'Accept-Language'
     const locale = req.getLocale();
     req = matchedData(req)
-    var id = req.id
-    var otp = req.otp
+    var id = req.id;
+    var otp = req.otp;
     const query = `select * from verify_otp WHERE id = ${id} AND otp = ${otp}`;
     let tempData = await utils.executeQuery(query);
     if(tempData.length > 0)
     {
       const update_q = `update verify_otp SET status='1' WHERE id = ${id}`;
       let tempData1 = await utils.executeQuery(update_q);
+      let updateSendTo = ``;
+      if(req.type == 1) {
+        updateSendTo += `SET mobile_no_verified=1, mobile_no='${req.send_to}'`
+      }
+      if(req.type == 2) {
+        updateSendTo += `SET email_verified=1, email='${req.send_to}'`
+      }
+      const updateUserQuery = `update users ${updateSendTo} WHERE id = ${req.user_id}`;
+      await utils.executeQuery(updateUserQuery);
       successData.data = tempData;
       successData.totalRecord = tempData.length;
-      res.status(201).json(successData);
-    } else {
+      res.status(200).json(successData);
+    } 
+    else {
       res.status(201).json(failedData);      
     }
     
   } catch (error) {
     utils.handleError(res, error)
   }
+}
+
+exports.verifyMobile = async (req, res) => {
+    try {
+      // Gets locale from header 'Accept-Language'
+      req = matchedData(req)
+      const query = `select id, mobile_no, mobile_no_verified from users WHERE mobile_no = '${req.mobile_no}' AND mobile_no_verified = 1`;
+      let tempData = await utils.executeQuery(query);
+        successData.totalRecord = tempData.length;
+        successData.data = tempData;
+        res.status(200).json(successData);
+      
+    } catch (error) {
+      utils.handleError(res, error)
+    }
+}
+
+exports.verifyEmail = async (req, res) => {
+    try {
+      // Gets locale from header 'Accept-Language'
+      req = matchedData(req)
+      const query = `select id, email from users WHERE email = '${req.email}' AND email_verified = 1`;
+      let tempData = await utils.executeQuery(query);
+        successData.totalRecord = tempData.length;
+        successData.data = tempData;
+        res.status(200).json(successData);
+      
+    } catch (error) {
+      utils.handleError(res, error)
+    }
 }
 
 /**
@@ -522,21 +563,81 @@ const getUserIdFromToken = async (token) => {
  */
 exports.login = async (req, res) => {
   try {
-    const data = matchedData(req)
-    const user = await findUser(data.email)
-    await userIsBlocked(user)
-    await checkLoginAttemptsAndBlockExpires(user)
-    const isPasswordMatch = await auth.checkPassword(data.password, user)
-    if (!isPasswordMatch) {
-      utils.handleError(res, await passwordsDoNotMatch(user))
-    } else {
-      // all ok, register access and return token
-      user.loginAttempts = 0
-      await saveLoginAttemptsToDB(user)
-      res.status(200).json(await saveUserAccessAndReturnToken(req, user))
+    const data = matchedData(req);
+    let WHERE = `u.password = '${data.password}'`;
+    if(data.auth_by == 'email') {
+        WHERE += ` AND u.email = '${data.user_name}'`;
     }
+    else if(data.auth_by == 'mobile') {
+        WHERE += ` AND u.mobile_no = '${data.user_name}'`;
+    }
+    const userQuery = `select 
+        u.id,
+        u.first_name,
+        u.middle_name,
+        u.last_name,
+        u.full_name,
+        u.email,
+        u.email_verified,
+        u.mobile_no,
+        u.mobile_no_verified,
+        u.dob,
+        u.state,
+        u.address,
+        u.degree,
+        u.council_registration_number,
+        u.pan_number,
+        u.pan_verified,
+        u.aadhar_number,
+        u.aadhar_verified,
+        u.specialization,
+        ms.displayName specializationName,
+        u.sate_of_practice,
+        s.stateName,
+        u.city,
+        c.cityName,
+        u.status_id,
+        st.name status,
+        u.usertype_id,
+        ut.type userType
+    from users u 
+    LEFT JOIN master_specialization ms ON ms.id = u.specialization
+    LEFT JOIN states s ON s.stateID = u.sate_of_practice
+    LEFT JOIN cities c ON c.cityID = u.city
+    LEFT JOIN status st ON st.id = u.status_id
+    LEFT JOIN usertype ut ON ut.id = u.usertype_id
+    WHERE ${WHERE}`;
+    let tmpUserData = await utils.executeQuery(userQuery);
+    let tmpData = null;
+    if(tmpUserData.length > 0) {
+        tmpData = tmpUserData[0];
+        const therapistQuery = `select tp.id,tp.user_id,tp.service_id,tp.service_charge,s.name from therapist_pref tp JOIN services s ON tp.user_id = s.id WHERE tp.user_id = ${tmpData.id}`;
+        let tempTherapistData = await utils.executeQuery(therapistQuery);
+        tmpData.preferences = tempTherapistData;
+
+        const documentQuery = `select d.id,d.user_id,d.degree_id,d.file_path,md.displayName from documents d JOIN master_degrees md ON d.user_id = md.id WHERE d.user_id = ${tmpData.id}`;
+        let tempDocumentData = await utils.executeQuery(documentQuery);
+        for (let di = 0; di < tempDocumentData.length; di++) {
+            const element = tempDocumentData[di];
+            tempDocumentData[di].checked = true;
+            tempDocumentData[di].value = '';
+            
+        }
+        tmpData.docs = tempDocumentData;
+    }
+    successData.data = tmpData;
+
+    if(tmpData) {
+        successData.totalRecord = 1;
+    }
+    else {
+        successData.totalRecord = 0;
+        successData.message = 'Incorrect user name or password';
+    }
+    res.status(200).json(successData);
+    
   } catch (error) {
-    utils.handleError(res, error)
+    res.status(201).json(failedData); 
   }
 }
 
@@ -550,7 +651,6 @@ exports.register = async (req, res) => {
     // Gets locale from header 'Accept-Language'
     const locale = req.getLocale();
     req = matchedData(req)
-    console.log(" req ", req)
     const doesEmailExists = await emailer.emailExists(req.email);
     if (!doesEmailExists) {
       const item = await registerUser(req);

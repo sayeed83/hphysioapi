@@ -79,6 +79,12 @@ exports.register = [
  * Validates sendOtp request
  */
 exports.sendOtp = [
+    check('user_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
   check('send_to')
     .exists()
     .withMessage('MISSING')
@@ -90,6 +96,7 @@ exports.sendOtp = [
     .withMessage('MISSING')
     .not()
     .isEmpty()
+    .isIn([1,2])
     .withMessage('IS_EMPTY'),
   check('reference')
     .exists()
@@ -108,6 +115,27 @@ exports.verifyOtp = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
+    check('user_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+    
+    check('send_to')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+
+    check('type')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+
   check('otp')
     .exists()
     .withMessage('MISSING')
@@ -123,14 +151,13 @@ exports.verifyOtp = [
  * Validates login request
  */
 exports.login = [
-  check('email')
+  check('user_name')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
-    .withMessage('IS_EMPTY')
-    .isEmail()
-    .withMessage('EMAIL_IS_NOT_VALID'),
+    .withMessage('IS_EMPTY'),
+
   check('password')
     .exists()
     .withMessage('MISSING')
@@ -141,6 +168,14 @@ exports.login = [
       min: 5
     })
     .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
+
+    check('auth_by')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .isIn([ "email", "mobile"])
+    .withMessage('IS_EMPTY'),
   (req, res, next) => {
     validationResult(req, res, next)
   }
@@ -202,3 +237,32 @@ exports.resetPassword = [
     validationResult(req, res, next)
   }
 ]
+
+/**
+ * Validates verify request
+ */
+exports.verifyMobile = [
+    check('mobile_no')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),
+    (req, res, next) => {
+      validationResult(req, res, next)
+    }
+]
+
+exports.verifyEmail = [
+    check('email')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),
+    (req, res, next) => {
+      validationResult(req, res, next)
+    }
+]
+
+
