@@ -236,7 +236,7 @@ const registerUser = async (req) => {
     }
     
     var moment = require('moment');
-    var created_at = moment().format('YYYY-MM-DD H:i:S');
+    var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
     let registerQuery = `
 		INSERT INTO USERS (full_name, email, mobile_no, dob, city, state, address, password, status_id, usertype_id, created_at, updated_at) 
 		VALUES ('${req.fullName}', '${req.email}', '${req.mobileNumber}', '${req.dob}', '${req.city}', '${req.state}','${req.address}','${req.password}','${req.status_id}','${req.usertype_id}','${created_at}','${created_at}');
@@ -258,7 +258,7 @@ const sendOtp = async (req) => {
     }
     let otp = Math.floor((Math.random() * 10000));
     var moment = require('moment');
-    var created_at = moment().format('YYYY-MM-DD H:i:S');
+    var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
     let registerQuery = `
 		INSERT INTO verify_otp (send_to,type,otp,reference,created_at,updated_at) 
 		VALUES ('${req.send_to}', '${req.type}', '${otp}', '${req.reference}','${created_at}','${created_at}');
