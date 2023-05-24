@@ -226,7 +226,7 @@ const createItem = async (req) => {
       data: req.data,
     }
     var moment = require('moment');
-    var created_at = moment().format('YYYY-MM-DD H:i:S');
+    var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
     var arr = req.data;
     let registerQuery = `INSERT INTO therapist_pref (user_id, service_id, service_charge, created_at, updated_at) VALUES`;
 

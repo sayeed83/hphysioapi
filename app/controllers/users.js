@@ -5,7 +5,9 @@ const utils = require('../middleware/utils')
 const db = require('../middleware/db')
 const emailer = require('../middleware/emailer');
 let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
-let errorData = {message: 'Error', totalRecord: 0, data: [], status: 400}
+let changeMobilesuccess = {message: 'Mobile no updated successfully', totalRecord: 0, data: [], status: 200}
+let errorData = {message: 'Mobile No already exist', totalRecord: 0, data: [], status: 400}
+let otpError = {message: 'Invalid Otp', totalRecord: 0, data: [], status: 400}
 const fs = require('fs');
 
 /*********************
@@ -193,10 +195,21 @@ exports.getItem = async (req, res) => {
 exports.updateItem = async (req, res) => {
   try {
     req = matchedData(req);
-    let query = `UPDATE USERS SET full_name = '${req.fullName}', mobile_no = ${req.mobileNumber} WHERE (id = ${req.id});
-    `;
-    await utils.executeQuery(query);
-    res.status(200).json(successData);
+    let check = `SELECT * FROM users WHERE email = '${req.email}' AND id != '${req.user_id}' AND email_verified = 1 `;
+    let run = await utils.executeQuery(check);
+    if(run.length > 0) {
+      res.status(400).json({
+        "message":"Email Id already exist","totalRecord": 0,
+        "data": [],
+        "status": 400
+      });
+    } else {
+
+      let query = `UPDATE users SET full_name = '${req.fullName}', mobile_no = ${req.mobileNumber} WHERE (id = ${req.id});
+      `;
+      await utils.executeQuery(query);
+      res.status(200).json(successData);
+    }
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -209,9 +222,26 @@ exports.updateItem = async (req, res) => {
 exports.changeMobile = async (req, res) => {
   try {
     req = matchedData(req);
-    let query = `UPDATE USERS SET mobile_no = '${req.mobile_no}' WHERE id = ${req.user_id}`;
-    await utils.executeQuery(query);
-    res.status(200).json(successData);
+
+    let check = `SELECT * FROM users WHERE mobile_no = '${req.mobile_no}' AND id != '${req.user_id}' AND mobile_no_verified = 1 `;
+    let run = await utils.executeQuery(check);
+    if(run.length > 0) {
+      res.status(400).json(errorData);
+    } else {
+      if(req.otp) {
+        let verify = `SELECT * FROM verify_otp WHERE send_to = '${req.mobile_no}' AND otp = '${req.otp}' AND type= 1`;
+        let run2 = await utils.executeQuery(verify);
+        if(run2.length > 0) { 
+          let query = `UPDATE users SET mobile_no = '${req.mobile_no}' WHERE id = ${req.user_id}`;
+          await utils.executeQuery(query);
+          res.status(200).json(changeMobilesuccess);
+        } else {
+          res.status(200).json(otpError);
+        }
+      } else {
+        res.status(200).json(successData);
+      }
+    }
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -220,7 +250,7 @@ exports.changeMobile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     req = matchedData(req);
-    let query = `UPDATE USERS SET full_name = '${req.name}',dob='${req.dob}',city='${req.city}',state='${req.state}',address='${req.address}' WHERE id = ${req.user_id}`;
+    let query = `UPDATE users SET full_name = '${req.name}',dob='${req.dob}',city='${req.city}',state='${req.state}',address='${req.address}' WHERE id = ${req.user_id}`;
     await utils.executeQuery(query);
     res.status(200).json(successData);
   } catch (error) {
@@ -230,9 +260,35 @@ exports.updateProfile = async (req, res) => {
 exports.changeEmail = async (req, res) => {
   try {
     req = matchedData(req);
-    let query = `UPDATE USERS SET email = '${req.email}' WHERE id = ${req.user_id}`;
-    await utils.executeQuery(query);
-    res.status(200).json(successData);
+    let check = `SELECT * FROM users WHERE email = '${req.email}' AND id != '${req.user_id}' AND email_verified = 1 `;
+    let run = await utils.executeQuery(check);
+    if(run.length > 0) {
+      res.status(400).json({
+        "message":"Email Id already exist","totalRecord": 0,
+        "data": [],
+        "status": 400
+      });
+    } else {
+      if(req.otp) {
+        let verify = `SELECT * FROM verify_otp WHERE send_to = '${req.email}' AND otp = '${req.otp}' AND type= 2`;
+        let run2 = await utils.executeQuery(verify);
+        if(run2.length > 0) { 
+          let query = `UPDATE users SET email = '${req.email}' WHERE id = ${req.user_id}`;
+          await utils.executeQuery(query);
+          res.status(200).json({
+            "message":"Email Id updated successfully",
+            "totalRecord": 0,
+            "data": [],
+            "status": 200
+          });
+        } else {
+          res.status(200).json(otpError);
+        }
+      } else {
+        res.status(200).json(successData);
+      }
+
+    }
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -240,7 +296,7 @@ exports.changeEmail = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     req = matchedData(req);
-    let query = `UPDATE USERS SET password = '${req.password}' WHERE id = ${req.user_id}`;
+    let query = `UPDATE users SET password = '${req.password}' WHERE id = ${req.user_id}`;
     await utils.executeQuery(query);
     res.status(200).json(successData);
   } catch (error) {

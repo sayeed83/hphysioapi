@@ -176,6 +176,9 @@ exports.changeMobile = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
+  check('otp')
+    .optional()
+    .trim(),
   (req, res, next) => {
     validationResult(req, res, next)
   }
@@ -193,6 +196,9 @@ exports.changeEmail = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
+  check('otp')
+  .optional()
+  .trim(),
   (req, res, next) => {
     validationResult(req, res, next)
   }
