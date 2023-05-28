@@ -23,6 +23,15 @@ router.post(
     validate.getHomedata,
     controller.getHomedata
 );
+/*
+ * Get Customer Home all items route
+ */
+router.post(
+    '/customer',
+    trimRequest.all,
+    validate.getCustHomedata,
+    controller.getCustHomedata
+);
 
 
 module.exports = router

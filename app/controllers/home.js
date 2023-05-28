@@ -182,3 +182,40 @@ exports.getHomedata = async (req, res) => {
     utils.handleError(res, error)
   }
 }
+
+exports.getCustHomedata = async (req, res) => {
+  try {
+    const locale = req.getLocale()
+    req = matchedData(req)
+    const query = `SELECT *
+                   FROM services`;
+    let tempData = await utils.executeQuery(query);
+    let arr = [];
+    await Promise.all(tempData?.map(async (list,index) => {
+      const query1 = `SELECT *
+                     FROM therapist_pref LEFT JOIN users ON therapist_pref.user_id=users.id WHERE service_id='${list?.id}'`;
+      let tempData1 = await utils.executeQuery(query1);
+      let arr1 = []
+      await  Promise.all(tempData1?.map(async (nlist) => { 
+        arr1.push({
+          'id':nlist?.id,
+          'service_charge':nlist?.service_charge,
+          'name':nlist?.full_name ?? '',
+        })
+      }));
+      arr.push({
+        'id':list?.id,
+        'name':list?.name,
+        'doctors':arr1,
+      })
+    }))
+    successData.data = arr;
+
+
+    successData.totalRecord = arr.length;
+    res.status(200).json(successData);
+
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
