@@ -79,7 +79,7 @@ exports.register = [
  * Validates sendOtp request
  */
 exports.sendOtp = [
-    check('user_id')
+  check('user_id')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -96,7 +96,7 @@ exports.sendOtp = [
     .withMessage('MISSING')
     .not()
     .isEmpty()
-    .isIn([1,2])
+    .isIn([1, 2])
     .withMessage('IS_EMPTY'),
   check('reference')
     .exists()
@@ -115,21 +115,21 @@ exports.verifyOtp = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
-    check('user_id')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY'),
-    
-    check('send_to')
+  check('user_id')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
 
-    check('type')
+  check('send_to')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+
+  check('type')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -169,12 +169,45 @@ exports.login = [
     })
     .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
 
-    check('auth_by')
+  check('auth_by')
     .exists()
     .withMessage('MISSING')
     .not()
     .isEmpty()
-    .isIn([ "email", "mobile"])
+    .isIn(['email', 'mobile'])
+    .withMessage('IS_EMPTY'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]
+/**
+ * Validates customer login request
+ */
+exports.cust_login = [
+  check('user_name')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+
+  check('password')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .isLength({
+      min: 5
+    })
+    .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
+
+  check('auth_by')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .isIn(['email', 'mobile'])
     .withMessage('IS_EMPTY'),
   (req, res, next) => {
     validationResult(req, res, next)
@@ -242,27 +275,25 @@ exports.resetPassword = [
  * Validates verify request
  */
 exports.verifyMobile = [
-    check('mobile_no')
-      .exists()
-      .withMessage('MISSING')
-      .not()
-      .isEmpty()
-      .withMessage('IS_EMPTY'),
-    (req, res, next) => {
-      validationResult(req, res, next)
-    }
+  check('mobile_no')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
 ]
 
 exports.verifyEmail = [
-    check('email')
-      .exists()
-      .withMessage('MISSING')
-      .not()
-      .isEmpty()
-      .withMessage('IS_EMPTY'),
-    (req, res, next) => {
-      validationResult(req, res, next)
-    }
+  check('email')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
 ]
-
-

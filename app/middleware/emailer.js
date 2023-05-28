@@ -68,17 +68,15 @@ module.exports = {
    */
   async emailExists(email) {
     return new Promise(async (resolve, reject) => {
-		let query = `select email from users WHERE email = '${email}'`;
-		let data = await executeQuery(query);
-		// console.log(" data ------ ", data);
-		if(data.length > 0) {
-			let tempErro = {'message': 'EMAIL_ALREADY_EXISTS'}
-      		itemAlreadyExists(tempErro, '', reject, 'EMAIL_ALREADY_EXISTS');
-		}
-		else {
-			resolve(false);
-		}
-    	
+      let query = `select email from users WHERE email = '${email}'`
+      let data = await executeQuery(query)
+      // console.log(" data ------ ", data);
+      if (data.length > 0) {
+        let tempErro = { message: 'EMAIL_ALREADY_EXISTS' }
+        itemAlreadyExists(tempErro, '', reject, 'EMAIL_ALREADY_EXISTS')
+      } else {
+        resolve(false)
+      }
     })
   },
 

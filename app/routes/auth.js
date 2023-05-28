@@ -68,12 +68,7 @@ router.post('/login', trimRequest.all, validate.login, controller.login)
 /*
  * Register route
  */
-router.post(
-  '/sendOtp',
-  trimRequest.all,
-  validate.sendOtp,
-  controller.sendOtp
-)
+router.post('/sendOtp', trimRequest.all, validate.sendOtp, controller.sendOtp)
 /*
  * Register route
  */
@@ -85,17 +80,27 @@ router.post(
 )
 
 router.post(
-    '/verifyMobile',
-    trimRequest.all,
-    validate.verifyMobile,
-    controller.verifyMobile
+  '/verifyMobile',
+  trimRequest.all,
+  validate.verifyMobile,
+  controller.verifyMobile
 )
 
 router.post(
-    '/verifyEmail',
-    trimRequest.all,
-    validate.verifyEmail,
-    controller.verifyEmail
+  '/verifyEmail',
+  trimRequest.all,
+  validate.verifyEmail,
+  controller.verifyEmail
 )
+
+// ============================== Customer App =================================
+
+router.post(
+  '/customer/login',
+  trimRequest.all,
+  validate.cust_login,
+  controller.cust_login
+)
+
 
 module.exports = router
