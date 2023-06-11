@@ -9,6 +9,7 @@ let changeMobilesuccess = {message: 'Mobile no updated successfully', totalRecor
 let errorData = {message: 'Mobile No already exist', totalRecord: 0, data: [], status: 400}
 let otpError = {message: 'Invalid Otp', totalRecord: 0, data: [], status: 400}
 const fs = require('fs');
+const moment = require("moment")
 
 /*********************
  * Private functions *
@@ -341,9 +342,13 @@ exports.createItem = async (req, res) => {
  * @param {Object} req - request object
  * @param {Object} res - response object
  */
-exports.deleteItem = async (req, res) => {
+exports.deleteAcc = async (req, res) => {
   try {
     req = matchedData(req)
+    var deleted_at = moment().format('YYYY-MM-DD HH:mm:ss');
+    let query = `UPDATE users SET reason='${req.reason}',deleted_at = '${deleted_at}' WHERE id = ${req.user_id}`;
+    await utils.executeQuery(query);
+
     res.status(200).json(successData);
   } catch (error) {
     utils.handleError(res, error)

@@ -56,12 +56,12 @@ router.patch(
 /*
  * Delete item route
  */
-router.delete(
-  '/:id',
-  trimRequest.all,
-  validate.deleteItem,
-  controller.deleteItem
-)
+// router.delete(
+//   '/:id',
+//   trimRequest.all,
+//   validate.deleteItem,
+//   controller.deleteItem
+// )
 /*
  * Change mobile route
  */
@@ -97,6 +97,13 @@ router.post(
   trimRequest.all,
   validate.changePassword,
   controller.changePassword
+)
+
+router.post(
+  '/delete_account',
+  trimRequest.all,
+  validate.deleteItem,
+  controller.deleteAcc
 )
 
 module.exports = router

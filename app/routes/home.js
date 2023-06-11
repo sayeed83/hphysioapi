@@ -23,6 +23,13 @@ router.post(
     validate.getHomedata,
     controller.getHomedata
 );
+
+router.post(
+    '/getCustomerAllreq',
+    trimRequest.all,
+    validate.getCustReq,
+    controller.getCustReq
+);
 /*
  * Get Customer Home all items route
  */

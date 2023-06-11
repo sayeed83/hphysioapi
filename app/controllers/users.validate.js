@@ -281,7 +281,13 @@ exports.getItem = [
  * Validates delete item request
  */
 exports.deleteItem = [
-  check('id')
+  check('user_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  check('reason')
     .exists()
     .withMessage('MISSING')
     .not()

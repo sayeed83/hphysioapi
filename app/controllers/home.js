@@ -219,3 +219,91 @@ exports.getCustHomedata = async (req, res) => {
     utils.handleError(res, error)
   }
 }
+
+exports.getCustReq = async (req, res) => {
+  try {
+    // Gets locale from header 'Accept-Language'
+      const locale = req.getLocale()
+      req = matchedData(req)
+
+      const query = `select *
+      from category`;
+      
+      let tempData = await utils.executeQuery(query);
+      let arr = [];
+      // Array.prototype.forEach.call(tempData, element => {
+      //   console.log(element)
+      //   const query1 = `select ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
+      //                 from patient_services  as ps 
+      //                 LEFT JOIN users as u 
+      //                 ON ps.user_id = u.id
+      //                 LEFT JOIN services as s 
+      //                 ON ps.service_id = s.id
+                      
+      //                 WHERE partner_id = ${req.user_id} AND ps.cat_id = ${element.id}`;
+      //   let tempData1 = await utils.executeQuery(query1);
+      //   let arr1 = [];
+      //   Array.prototype.forEach.call(tempData1, newelement => {
+      //     arr1.push({
+      //       'id':newelement.id,
+      //       'service_name':newelement.service_name
+      //     });
+      //   })
+      //   arr.push({
+      //     'id':element.id,
+      //     'cat_name':element.cat_name,
+      //     'patient_services':arr1,
+      //   });
+      // });
+      await Promise.all(tempData.map(async (element) => {
+        const query1 = `select ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
+                      from patient_services  as ps 
+                      LEFT JOIN users as u 
+                      ON ps.partner_id = u.id
+                      LEFT JOIN services as s 
+                      ON ps.service_id = s.id
+                      
+                      WHERE user_id = ${req.user_id} AND ps.cat_id = ${element.id}`;
+        let tempData1 = await utils.executeQuery(query1);
+        let arr1 = [];
+        await Promise.all(tempData1.map(async (newelement) => {
+          let status = '';
+          if (newelement.booking_status == 1) {
+            status = 'Incomplete';
+          } else {
+            status = 'Completed';            
+          }
+
+          arr1.push({
+                  'id':newelement.id,
+                  'service_id':newelement.service_id,
+                  'service_name':newelement.service_name,
+                  'booing_status':status,
+                  'partner_id':newelement.user_id,
+                  'doctor_name':newelement.full_name,
+                  'email':newelement.email,
+                  'mobile':newelement.mobile,
+                  'dob':newelement.dob,
+                  'city':newelement.city,
+                  'state':newelement.state,
+                  'address':newelement.address,
+                });
+        }));
+        arr.push({
+          'id':element.id,
+          'cat_name':element.cat_name,
+          'patient_services':arr1,
+        });
+        
+      }));
+        console.log(arr);
+      successData.data = arr;
+      successData.totalRecord = tempData.length;
+      res.status(200).json(successData);
+
+      
+    
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
