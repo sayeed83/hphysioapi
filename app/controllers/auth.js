@@ -601,6 +601,8 @@ exports.login = async (req, res) => {
         u.aadhar_number,
         u.aadhar_verified,
         u.specialization,
+        u.payment_status,
+        u.usertype_id,
         ms.displayName specializationName,
         u.sate_of_practice,
         s.stateName,
