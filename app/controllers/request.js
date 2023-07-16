@@ -221,3 +221,15 @@ exports.submitrequest = async (req, res) => {
     utils.handleError(res, error)
   }
 }
+
+// get partner request by :id
+exports.getRequest = async (req, res) => {
+  try {
+    req = matchedData(req)
+    let query = `UPDATE patient_services SET booking_status = '${req.status}' WHERE id = ${req.id}`;
+      await utils.executeQuery(query);
+      res.status(200).json(successData);
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}

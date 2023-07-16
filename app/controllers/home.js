@@ -145,7 +145,11 @@ exports.getHomedata = async (req, res) => {
           let status = '';
           if (newelement.booking_status == 1) {
             status = 'Incomplete';
-          } else {
+          } else if (newelement.booking_status == 2) {
+            status = 'Appointment Scheduled';            
+          } else if (newelement.booking_status == 3) {
+            status = 'Rejected';            
+          } else if (newelement.booking_status == 4) {
             status = 'Completed';            
           }
 

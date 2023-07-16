@@ -22,4 +22,12 @@ router.post(
 );
 
 
+// partner change request route
+router.get(
+    '/partner/:id',
+    trimRequest.all,
+    validate.getRequest,
+    controller.getRequest
+);
+
 module.exports = router

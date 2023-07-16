@@ -188,13 +188,13 @@ exports.getfilterdata = async (req, res) => {
     const locale = req.getLocale()
     req = matchedData(req)
     let filter = ``;
-    if(req?.filter == 1) {
+    if(req?.filter == 1) { // High to low
       filter = `ORDER BY tp.service_charge DESC`;
-    } else if (req?.filter == 2) {
+    } else if (req?.filter == 2) { // Low to high
       filter = `ORDER BY tp.service_charge ASC`;    
     }
     let price_range = ``;
-    if(req?.from && req?.to) {
+    if(req?.from && req?.to) { // Prive Range
       price_range = `tp.service_charge >= ${req?.from} AND tp.service_charge <= ${req?.to}`;
     } 
     console.log(filter);
