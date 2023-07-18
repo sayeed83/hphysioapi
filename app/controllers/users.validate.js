@@ -25,15 +25,8 @@ exports.createItem = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
-
     check('degree')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY'),
-
-    check('degree')
+    .if((value, { req }) => req.body.userType == 'Therapist')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -81,6 +74,7 @@ exports.createItem = [
     .trim(),
 
     check('council_registration_number')
+    .if((value, { req }) => req.body.userType == 'Therapist')
     .exists()
     .withMessage('MISSING')
     .not()

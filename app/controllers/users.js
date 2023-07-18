@@ -9,7 +9,8 @@ let changeMobilesuccess = {message: 'Mobile no updated successfully', totalRecor
 let errorData = {message: 'Mobile No already exist', totalRecord: 0, data: [], status: 400}
 let otpError = {message: 'Invalid Otp', totalRecord: 0, data: [], status: 400}
 const fs = require('fs');
-const moment = require("moment")
+const moment = require("moment");
+const NULL_VALUE = null;
 
 /*********************
  * Private functions *
@@ -61,11 +62,11 @@ const createUser = async (req) => {
         '${req.password}',
         '${req.degree}',
         '${req.specialization}',
-        '${req.sate_of_practice}',
-        '${req.council_registration_number}',
-        '${req.pan_number}',
+        ${req.sate_of_practice || NULL_VALUE},
+        '${req.council_registration_number || NULL_VALUE}',
+        '${req.pan_number || NULL_VALUE}',
         '${1}',
-        '${req.aadhar_number}',
+        '${req.aadhar_number || NULL_VALUE}',
         '${1}',
         '1',
         '${req.userType == 'Therapist' ? '2' : '1'}',
@@ -75,7 +76,7 @@ const createUser = async (req) => {
     );`;
     return new Promise(async (resolve, reject) => {
         let temData = await utils.executeQuery(insertQeury);
-        // console.log(" temData ==== ", temData.insertId);
+        console.log(" temData ==== ", temData.insertId);
         resolve(temData.insertId);
     })
 }

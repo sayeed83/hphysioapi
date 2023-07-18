@@ -1,9 +1,0 @@
-CREATE TABLE `USER` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(45) DEFAULT NULL,
-  `fullName` varchar(45) DEFAULT NULL,
-  `password` varchar(45) DEFAULT NULL,
-  `userType` varchar(45) DEFAULT NULL,
-  `mobileNumber` bigint DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
