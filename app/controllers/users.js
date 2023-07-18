@@ -61,7 +61,7 @@ const createUser = async (req) => {
         '${req.address}',
         '${req.password}',
         '${req.degree}',
-        '${req.specialization}',
+        ${req.specialization || NULL_VALUE},
         ${req.sate_of_practice || NULL_VALUE},
         '${req.council_registration_number || NULL_VALUE}',
         '${req.pan_number || NULL_VALUE}',
