@@ -205,7 +205,7 @@ exports.updateItem = async (req, res) => {
         "status": 400
       });
     } else {
-
+      
       let query = `UPDATE users SET full_name = '${req.fullName}', mobile_no = ${req.mobileNumber} WHERE (id = ${req.id});
       `;
       await utils.executeQuery(query);
@@ -254,6 +254,21 @@ exports.updateProfile = async (req, res) => {
     let query = `UPDATE users SET full_name = '${req.name}',dob='${req.dob}',city='${req.city}',state='${req.state}',address='${req.address}' WHERE id = ${req.user_id}`;
     await utils.executeQuery(query);
     res.status(200).json(successData);
+    if(req.preference) {
+      req.preference.forEach( async value => {
+        let check = `SELECT * FROM therapist_pref WHERE user_id = '${req.user_id}' AND service_id = '${value.service_id}' LIMIT 1`;
+        let run = await utils.executeQuery(check);
+        var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
+        let update_query;
+        if(run.length > 0) {
+          let id = run[0]?.id;
+          update_query = `UPDATE therapist_pref SET service_charge='${value.service_charge}',updated_at='${created_at}' WHERE id = ${id}`;
+        } else {
+          update_query = `INSERT INTO therapist_pref (user_id,service_id,service_charge,created_at,updated_at) VALUES ('${req.user_id}','${value.service_id}','${value.service_charge}','${created_at}','${created_at}')`;          
+        }
+        await utils.executeQuery(update_query);          
+      })
+    }
   } catch (error) {
     utils.handleError(res, error)
   }
@@ -296,7 +311,7 @@ exports.changeEmail = async (req, res) => {
 }
 exports.changePassword = async (req, res) => {
   try {
-    req = matchedData(req);
+    req = matchedData(req);    
     let query = `UPDATE users SET password = '${req.password}' WHERE id = ${req.user_id}`;
     await utils.executeQuery(query);
     res.status(200).json(successData);
