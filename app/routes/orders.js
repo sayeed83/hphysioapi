@@ -21,5 +21,14 @@ router.post(
     controller.createOrder
 );
 
+// payment succcess response
+router.post(
+    '/payment_success',
+    trimRequest.all,
+    validate.paymentSuccess,
+    controller.paymentSuccess
+);
+
+
 
 module.exports = router

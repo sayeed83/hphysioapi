@@ -95,7 +95,7 @@ exports.changePassword = [
 ]
 
 // get partner request by :id
-exports.getRequest = [
+exports.updateRequestStatus = [
   check('id')
     .exists()
     .withMessage('MISSING')

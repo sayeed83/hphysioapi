@@ -223,7 +223,7 @@ exports.submitrequest = async (req, res) => {
 }
 
 // get partner request by :id
-exports.getRequest = async (req, res) => {
+exports.updateRequestStatus = async (req, res) => {
   try {
     req = matchedData(req)
     let query = `UPDATE patient_services SET booking_status = '${req.status}' WHERE id = ${req.id}`;
