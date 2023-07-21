@@ -23,11 +23,11 @@ router.post(
 
 
 // partner change request route
-router.get(
-    '/partner/:id',
+router.post(
+    '/partner/update_status',
     trimRequest.all,
-    validate.getRequest,
-    controller.getRequest
+    validate.updateRequestStatus,
+    controller.updateRequestStatus
 );
 
 module.exports = router

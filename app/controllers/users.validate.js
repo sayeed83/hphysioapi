@@ -234,6 +234,12 @@ exports.updateProfile = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
+  check('preference')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
   (req, res, next) => {
     validationResult(req, res, next)
   }
