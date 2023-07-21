@@ -214,8 +214,9 @@ exports.submitrequest = async (req, res) => {
                       )`;
     return new Promise(async (resolve, reject) => {
       let temData = await utils.executeQuery(insertQeury);
-      // console.log(" temData ==== ", temData.insertId);
-      resolve(temData.insertId);
+      console.log(" temData ==== ", temData.insertId);
+      res.status(200).json(temData);
+    //   resolve(temData.insertId);
     })
   } catch (error) {
     utils.handleError(res, error)
