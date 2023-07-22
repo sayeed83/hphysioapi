@@ -128,8 +128,13 @@ exports.paymentSuccess = async (req, res) => {
     } else if(req.status == 'Success' && req.type == 1) {
       const query1 = `SELECT * FROM transactions WHERE txn_ref_no='${req.order_id}' LIMIT 1`;
       let tempData1 = await utils.executeQuery(query1);
-      const updatequery1 = `UPDATE patient_services SET txn_status='Success',transaction_id='${tempData1[0]['id']}' WHERE txn_ref_no='${req.reference_id}'`;        
+    //   console.log(" tempData1 ", tempData1);
+      const updatequery1 = `UPDATE transactions SET txn_status='Success' WHERE txn_ref_no='${req.order_id}'`;        
       await utils.executeQuery(updatequery1);
+
+      const updatequery2 = `UPDATE patient_services SET transaction_id='${tempData1[0]['id']}' WHERE id='${req.reference_id}'`;        
+      await utils.executeQuery(updatequery2);
+      res.status(200).json(successData);
     }
   } catch (error) {
     utils.handleError(res, error)
