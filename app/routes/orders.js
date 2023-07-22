@@ -28,6 +28,12 @@ router.post(
     validate.paymentSuccess,
     controller.paymentSuccess
 );
+router.post(
+    '/payment_failed',
+    trimRequest.all,
+    validate.paymentFailed,
+    controller.paymentFailed
+);
 
 
 
