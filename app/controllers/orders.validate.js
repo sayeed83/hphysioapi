@@ -12,7 +12,7 @@ exports.createOrder = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
-  check('subscription_id')
+  check('reference_id')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -31,6 +31,12 @@ exports.createOrder = [
     .isEmpty()
     .withMessage('IS_EMPTY'),
   check('status')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  check('type') // 1 (patiant), 2 (tharapist)
     .exists()
     .withMessage('MISSING')
     .not()
@@ -89,13 +95,7 @@ exports.paymentSuccess = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
-  check('subscription_id')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY'),
-  check('amount')
+  check('reference_id')
     .exists()
     .withMessage('MISSING')
     .not()
@@ -114,6 +114,23 @@ exports.paymentSuccess = [
     .isEmpty()
     .withMessage('IS_EMPTY'),
   check('type')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]
+exports.paymentFailed = [
+  check('order_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  check('status')
     .exists()
     .withMessage('MISSING')
     .not()
