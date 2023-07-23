@@ -254,7 +254,7 @@ exports.getCustReq = async (req, res) => {
           if (newelement.booking_status == 1) {
             status = 'Requested';
           } else if (newelement.booking_status == 2) {
-            status = 'Appointment Scheduled';            
+            status = 'Confirmation Pending';            
           } else if (newelement.booking_status == 3) {
             status = 'Rejected';            
           } else if (newelement.booking_status == 4) {
