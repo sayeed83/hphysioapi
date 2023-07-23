@@ -107,6 +107,12 @@ exports.paymentSuccess = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
+  check('amount')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
   check('status')
     .exists()
     .withMessage('MISSING')

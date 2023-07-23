@@ -5,6 +5,7 @@ const db = require('../middleware/db')
 const { json } = require('body-parser')
 const moment = require('moment');
 let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
+let failedData = {message: 'Failed', totalRecord: 0, data: [], status: 400}
 
 // Create Order Api
 exports.createOrder = async (req, res) => {
@@ -89,42 +90,51 @@ exports.paymentSuccess = async (req, res) => {
   try {
     const locale = req.getLocale()
     req = matchedData(req)
-    if(req.status == 'Success' && req.type == 2) {
 
+    if(req.status == 'Success' && req.type == 2) {
+      console.log(req);
       var created_at = moment().format('YYYY-MM-DD HH:mm:ss');
       const query1 = `SELECT * FROM transactions WHERE txn_ref_no='${req.order_id}' LIMIT 1`;
       let tempData1 = await utils.executeQuery(query1);
-      const infoSub = `SELECT * FROM subscription_plan WHERE id='${req.reference_id}' LIMIT 1`;
-      let subData = await utils.executeQuery(infoSub);
-      let date = moment().format("YYYY-MM-DD");
-      let expirydate = moment().add(subData[0]['validity'],'M').format("YYYY-MM-DD");
-      const insertSub = `INSERT INTO my_subscription(
-        user_id,
-        subscription_id,
-        validity,
-        price,
-        start_date,
-        end_date,
-        transaction_id,
-        created_at
-      ) VALUES(
-        '${req.user_id}',
-        '${req.reference_id}',
-        '${subData[0]['validity']}',
-        '${req.amount}',
-        '${date}',
-        '${expirydate}',
-        '${tempData1[0]['id']}',
-        '${created_at}'
-      )`;
-      await utils.executeQuery(insertSub);
+      console.log(tempData1);
+      if(tempData1.length > 0) {
 
-      const updatequery = `UPDATE users SET payment_status='2' WHERE id='${tempData1[0]['user_id']}'`;        
-      await utils.executeQuery(updatequery);
-      const updatequery1 = `UPDATE transactions SET txn_status='Success' WHERE id='${tempData1[0]['id']}'`;        
-      await utils.executeQuery(updatequery1);
-    
-      res.status(200).json(successData);
+        const infoSub = `SELECT * FROM subscription_plan WHERE id='${req.reference_id}' LIMIT 1`;
+        let subData = await utils.executeQuery(infoSub);
+        let date = moment().format("YYYY-MM-DD");
+        let expirydate = moment().add(subData[0]['validity'],'M').format("YYYY-MM-DD");
+        const insertSub = `INSERT INTO my_subscription(
+          user_id,
+          subscription_id,
+          validity,
+          price,
+          start_date,
+          end_date,
+          transaction_id,
+          created_at
+        ) VALUES(
+          '${req.user_id}',
+          '${req.reference_id}',
+          '${subData[0]['validity']}',
+          '${req.amount}',
+          '${date}',
+          '${expirydate}',
+          '${tempData1[0]['id']}',
+          '${created_at}'
+        )`;
+        await utils.executeQuery(insertSub);
+  
+  
+  
+        const updatequery = `UPDATE users SET payment_status='2' WHERE id='${tempData1[0]['user_id']}'`;        
+        await utils.executeQuery(updatequery);
+        const updatequery1 = `UPDATE transactions SET txn_status='Success' WHERE id='${tempData1[0]['id']}'`;        
+        await utils.executeQuery(updatequery1);
+      
+        res.status(200).json(successData);
+      } else {
+        res.status(400).json(failedData);
+      }
     } else if(req.status == 'Success' && req.type == 1) {
       const query1 = `SELECT * FROM transactions WHERE txn_ref_no='${req.order_id}' LIMIT 1`;
       let tempData1 = await utils.executeQuery(query1);
