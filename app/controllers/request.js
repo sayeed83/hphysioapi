@@ -171,10 +171,9 @@ exports.getHomedata = async (req, res) => {
         });
         
       }));
-        console.log(arr);
-      successData.data = arr;
-      successData.totalRecord = tempData.length;
-      res.status(200).json(successData);
+        successData.data = arr;
+        successData.totalRecord = tempData.length;
+        res.status(200).json(successData);
 
       
     
@@ -186,12 +185,18 @@ exports.getHomedata = async (req, res) => {
 exports.submitrequest = async (req, res) => {
   try {
     const locale = req.getLocale()
-    req = matchedData(req)
+    req = matchedData(req);
+    const query = `select service_charge from therapist_pref where service_id = ${req?.service_id} AND user_id = ${req?.partner_id}`;
+    // console.log(" query ", query);
+    let tempData = await utils.executeQuery(query);
+    // console.log(" tempData ", tempData);
+    res.status(200).json(successData);
     let insertQeury = `INSERT INTO patient_services(
                         service_id,
                         partner_id,
                         user_id,
                         cat_id,
+                        price,
                         booking_date,
                         booking_time,
                         description,
@@ -204,6 +209,7 @@ exports.submitrequest = async (req, res) => {
                         '${req?.partner_id}',
                         '${req?.user_id}',
                         '${req?.cat_id}',
+                        ${tempData[0].service_charge},
                         '${req?.booking_date}',
                         '${req?.booking_time}',
                         '${req?.description}',
