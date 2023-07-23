@@ -131,13 +131,12 @@ exports.getHomedata = async (req, res) => {
       //   });
       // });
       await Promise.all(tempData.map(async (element) => {
-        const query1 = `select ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
+        const query1 = `select ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,ps.price,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
                       from patient_services  as ps 
                       LEFT JOIN users as u 
                       ON ps.user_id = u.id
                       LEFT JOIN services as s 
                       ON ps.service_id = s.id
-                      
                       WHERE partner_id = ${req.user_id} AND ps.cat_id = ${element.id}`;
         let tempData1 = await utils.executeQuery(query1);
         let arr1 = [];
@@ -162,6 +161,7 @@ exports.getHomedata = async (req, res) => {
                   'city':newelement.city,
                   'state':newelement.state,
                   'address':newelement.address,
+                  'price': newelement.price
                 });
         }));
         arr.push({
