@@ -68,7 +68,7 @@ const createUser = async (req) => {
         '${1}',
         '${req.aadhar_number || NULL_VALUE}',
         '${1}',
-        '1',
+        '${req.userType == 'Therapist' ? '1' : '2'}',
         '${req.userType == 'Therapist' ? '2' : '1'}',
         '2023-05-12 16:36:35',
         '2023-05-12 16:36:35',
