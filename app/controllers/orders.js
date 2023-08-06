@@ -119,7 +119,7 @@ exports.paymentSuccess = async (req, res) => {
       )`;
       await utils.executeQuery(insertSub);
 
-      const updatequery = `UPDATE users SET payment_status='2' WHERE id='${tempData1[0]['user_id']}'`;        
+      const updatequery = `UPDATE users SET payment_status='2', free_expired='0' WHERE id='${tempData1[0]['user_id']}'`;        
       await utils.executeQuery(updatequery);
       const updatequery1 = `UPDATE transactions SET txn_status='Success' WHERE id='${tempData1[0]['id']}'`;        
       await utils.executeQuery(updatequery1);

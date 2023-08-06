@@ -69,6 +69,7 @@ router.post('/login', trimRequest.all, validate.login, controller.login)
  * Register route
  */
 router.post('/sendOtp', trimRequest.all, validate.sendOtp, controller.sendOtp)
+router.post('/update_free', trimRequest.all, validate.freeExpired, controller.freeExpired)
 /*
  * Register route
  */

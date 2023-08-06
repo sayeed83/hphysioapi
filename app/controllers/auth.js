@@ -612,7 +612,8 @@ exports.login = async (req, res) => {
         u.status_id,
         st.name status,
         u.usertype_id,
-        ut.type userType
+        ut.type userType,
+        u.free_expired
     from users u 
     LEFT JOIN master_specialization ms ON ms.id = u.specialization
     LEFT JOIN states s ON s.stateID = u.sate_of_practice
@@ -835,4 +836,20 @@ exports.roleAuthorization = (roles) => async (req, res, next) => {
   } catch (error) {
     utils.handleError(res, error)
   }
+}
+
+
+exports.freeExpired = async (req, res) => {
+    try {
+      // Gets locale from header 'Accept-Language'
+      const locale = req.getLocale();
+      req = matchedData(req);
+      let query = `UPDATE users SET free_expired = 0 WHERE users.id = ${req.user_id}`;
+      await utils.executeQuery(query);
+      console.log(" req ", req);
+      res.status(200).json(successData);
+  
+    } catch (error) {
+      utils.handleError(res, error)
+    }
 }
