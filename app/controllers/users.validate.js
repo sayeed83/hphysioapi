@@ -262,6 +262,36 @@ exports.changePassword = [
   }
 ]
 
+exports.userRating = [
+    check('user_id')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),
+    check('patient_services_id')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),
+    check('rating')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),
+    check('rated_by')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),
+    (req, res, next) => {
+      validationResult(req, res, next)
+    }
+]
+
 /**
  * Validates get item request
  */

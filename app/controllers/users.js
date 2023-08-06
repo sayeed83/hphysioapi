@@ -370,3 +370,16 @@ exports.deleteAcc = async (req, res) => {
     utils.handleError(res, error)
   }
 }
+
+exports.userRating = async (req, res) => {
+    try {
+        req = matchedData(req);
+        let query = `INSERT INTO ratings (user_id, patient_services_id, rating, rated_by) VALUES (${req.user_id}, ${req.patient_services_id}, ${req.rating}, ${req.rated_by})`;
+        await utils.executeQuery(query);
+        let updateRatingQuery = `UPDATE users SET rating = (SELECT COALESCE(ROUND(SUM(rating) / COUNT(1), 2), 0.00) AS rating FROM ratings WHERE user_id = ${req.user_id}) WHERE users.id = ${req.user_id}`;
+        await utils.executeQuery(updateRatingQuery);
+        res.status(200).json(successData);
+    } catch (error) {
+        utils.handleError(res, error)
+    }
+}

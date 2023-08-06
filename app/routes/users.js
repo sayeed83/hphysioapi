@@ -106,4 +106,11 @@ router.post(
   controller.deleteAcc
 )
 
+router.post(
+    '/rate_user',
+    trimRequest.all,
+    validate.userRating,
+    controller.userRating
+)
+
 module.exports = router
