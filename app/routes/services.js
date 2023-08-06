@@ -26,5 +26,21 @@ router.post(
     controller.addPatientServiceAddress
 )
 
+// router.post(
+//     '/delete_patient_service_address',
+//     trimRequest.all,
+//     validate.addPatientServiceAddress,
+//     controller.addPatientServiceAddress
+// )
+
+router.post(
+    '/add_physio_service_address',
+    trimRequest.all,
+    validate.addPhysioServiceAddress,
+    controller.addPhysioServiceAddress
+)
+
+router.get('/get_service_address/:user_id', controller.getServiceAddress)
+
 
 module.exports = router

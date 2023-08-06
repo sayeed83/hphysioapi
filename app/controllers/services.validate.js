@@ -40,3 +40,23 @@ exports.addPatientServiceAddress = [
       validationResult(req, res, next)
     }
 ]
+
+exports.addPhysioServiceAddress = [
+    check('user_id')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),
+    check('address.*.full_address'),
+    check('address.*.default_address').isBoolean().withMessage('Default address should be a boolean value'),
+    check('address.*.area_id').isInt({ min: 1 }).withMessage('Invalid area_id'),
+    check('address.*.user_id').isInt({ min: 1 }).withMessage('Invalid user_id'),
+    check('address.*.pincode'),
+    check('address.*.city_id').isInt({ min: 1 }).withMessage('Invalid city_id'),
+    check('address.*.flat'),
+    check('address.*.landmark'),
+    (req, res, next) => {
+      validationResult(req, res, next)
+    }
+]
