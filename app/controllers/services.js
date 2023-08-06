@@ -100,7 +100,6 @@ exports.addPhysioServiceAddress = async (req, res) => {
 
 exports.getServiceAddress = async (req, res) => {
     try {
-        console.log(" req ", req.params.user_id);
         const query = `SELECT
                 sa.id,
                 sa.user_id,

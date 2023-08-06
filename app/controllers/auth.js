@@ -636,6 +636,24 @@ exports.login = async (req, res) => {
 
       }
       tmpData.docs = tempDocumentData;
+
+      const serviceAddresQuery = `SELECT
+                sa.id,
+                sa.user_id,
+                sa.default_address,
+                sa.full_address,
+                sa.area_id,
+                a.name area_name,
+                sa.pincode,
+                sa.city_id,
+                c.cityName as city_name
+            FROM
+                service_address sa
+                LEFT JOIN cities c ON c.cityID = sa.city_id
+                LEFT JOIN area a ON a.id = sa.area_id
+            WHERE user_id = ${tmpData.id}`;
+      let tempserviceAddrestData = await utils.executeQuery(serviceAddresQuery);
+      tmpData.service_address = tempserviceAddrestData;
     }
     successData.data = tmpData;
 
