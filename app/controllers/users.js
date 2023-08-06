@@ -40,6 +40,7 @@ const createUser = async (req) => {
         council_registration_number,
         pan_number,
         pan_verified,
+        email_verified,
         aadhar_number,
         aadhar_verified,
         status_id,
@@ -66,6 +67,7 @@ const createUser = async (req) => {
         '${req.council_registration_number || NULL_VALUE}',
         '${req.pan_number || NULL_VALUE}',
         '${1}',
+        ${1},
         '${req.aadhar_number || NULL_VALUE}',
         '${1}',
         '${req.userType == 'Therapist' ? '1' : '2'}',
@@ -331,7 +333,7 @@ exports.createItem = async (req, res) => {
     // Gets locale from header 'Accept-Language'
     const locale = req.getLocale();
     req = matchedData(req);
-    // console.log(" req ---- ", req);
+    
     const doesEmailExists = await emailer.emailExists(req.email)
     if (!doesEmailExists) {
         // console.log(" req.preferences ", req.preferences);
@@ -342,6 +344,14 @@ exports.createItem = async (req, res) => {
             }
             if(req.docs) {
                 await createDocument(userId, req.docs);
+            }
+            if(req.service_city && req.service_area) {
+                for (let index = 0; index < req.service_area.length; index++) {
+                    const saEl = req.service_area[index];
+                   let query = `INSERT INTO service_address (user_id, area_id, city_id) 
+                   VALUES (${userId}, ${saEl},${req.service_city})`;
+                   await utils.executeQuery(query);
+                }
             }
             
         }

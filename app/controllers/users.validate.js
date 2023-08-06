@@ -50,14 +50,6 @@ exports.createItem = [
       min: 5
     })
     .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
-//   check('role')
-//     .exists()
-//     .withMessage('MISSING')
-//     .not()
-//     .isEmpty()
-//     .withMessage('IS_EMPTY')
-//     .isIn(['Therapist', 'customer'])
-//     .withMessage('USER_NOT_IN_KNOWN_ROLE'),
   check('mobile_no')
     .exists()
     .withMessage('MISSING')
@@ -112,6 +104,11 @@ exports.createItem = [
     check('docs')
     .optional(),
 
+    check('service_area')
+    .optional(),
+
+    check('service_city')
+    .optional(),
   check('urlTwitter')
     .optional()
     .custom((v) => (v === '' ? true : validator.isURL(v)))
