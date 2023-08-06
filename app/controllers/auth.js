@@ -603,6 +603,7 @@ exports.login = async (req, res) => {
         u.specialization,
         u.payment_status,
         u.usertype_id,
+        u.rating,
         ms.displayName specializationName,
         u.sate_of_practice,
         s.stateName,
