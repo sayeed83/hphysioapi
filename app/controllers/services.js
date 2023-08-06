@@ -4,50 +4,6 @@ const utils = require('../middleware/utils')
 const db = require('../middleware/db')
 let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
 
-/*********************
- * Private functions *
- *********************/
-
-/**
- * Checks if a city already exists excluding itself
- * @param {string} id - id of item
- * @param {string} name - name of item
- */
-const cityExistsExcludingItself = async (id, name) => {
-  return new Promise((resolve, reject) => {
-    model.findOne(
-      {
-        name,
-        _id: {
-          $ne: id
-        }
-      },
-      (err, item) => {
-        utils.itemAlreadyExists(err, item, reject, 'CITY_ALREADY_EXISTS')
-        resolve(false)
-      }
-    )
-  })
-}
-
-/**
- * Checks if a city already exists in database
- * @param {string} name - name of item
- */
-const cityExists = async (name) => {
-  return new Promise((resolve, reject) => {
-    model.findOne(
-      {
-        name
-      },
-      (err, item) => {
-        utils.itemAlreadyExists(err, item, reject, 'CITY_ALREADY_EXISTS')
-        resolve(false)
-      }
-    )
-  })
-}
-
 /**
  * Gets all items from database
  */
@@ -103,4 +59,21 @@ exports.getAllItems = async (req, res) => {
   } catch (error) {
     utils.handleError(res, error)
   }
+}
+
+exports.addPatientServiceAddress = async (req, res) => {
+    try {
+        req = matchedData(req)
+       console.log(" req ", req);
+       if(req.default_address) {
+            let updateQuery = `UPDATE service_address SET default_address = 0 WHERE user_id = ${req.user_id}`;
+            await utils.executeQuery(updateQuery);
+       }
+       let query = `INSERT INTO service_address (user_id, default_address, full_address, area_id, pincode, city_id, flat, landmark) 
+       VALUES (${req.user_id}, ${req.default_address}, '${req.full_address}', ${req.area_id}, '${req.pincode}', ${req.city_id}, '${req.flat}', '${req.landmark}')`;
+       await utils.executeQuery(query);
+       res.status(200).json(successData);
+    } catch (error) {
+      utils.handleError(res, error)
+    }
 }

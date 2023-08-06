@@ -40,6 +40,10 @@ exports.getAllItems = async (req, res) => {
     const degreesQuery = `SELECT id, displayName FROM master_degrees WHERE deletedAt IS NULL`;
     let tempDegrees = await utils.executeQuery(degreesQuery);
     data.degrees = tempDegrees;
+
+    const areaQuery = `SELECT id,city_id,name FROM area WHERE deletedAt IS NULL`;
+    let tempAreas = await utils.executeQuery(areaQuery);
+    data.areas = tempAreas;
     
     successData.data = data;
     successData.totalRecord = data.length;
