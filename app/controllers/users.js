@@ -105,7 +105,7 @@ const createPreference = async (userId, preferences) => {
 
 const saveBase64Image = async (userId, base64Data) => {
     console.log(" base64Data ", base64Data.degree_id);
-    let attachment = base64Data.base64._z;
+    let attachment = base64Data.base64;
     let type = attachment.split(';')[0].split('/')[1];
     let buf = null;
     if(attachment.split(';')[0].split('/')[1] != 'pdf') {

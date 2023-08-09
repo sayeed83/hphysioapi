@@ -49,4 +49,13 @@ router.post(
   controller.changePassword
 )
 
+router.post(
+    '/updateProfilePicture',
+    // requireAuth,
+    // AuthController.roleAuthorization(['user', 'admin']),
+    trimRequest.all,
+    validate.profilePhoto,
+    controller.changePassword
+)
+
 module.exports = router

@@ -625,7 +625,18 @@ exports.login = async (req, res) => {
     let tmpData = null;
     if(tmpUserData.length > 0) {
       tmpData = tmpUserData[0];
-      const therapistQuery = `select tp.id,tp.user_id,tp.service_id,tp.service_charge,s.name from therapist_pref tp JOIN services s ON tp.user_id = s.id WHERE tp.user_id = ${tmpData.id}`;
+    //   const therapistQuery = `select tp.id,tp.user_id,tp.service_id,tp.service_charge,s.name from therapist_pref tp JOIN services s ON tp.user_id = s.id WHERE tp.user_id = ${tmpData.id}`;
+      const therapistQuery = `
+      SELECT
+            tp.id,
+            tp.user_id,
+            tp.service_id,
+            tp.service_charge,
+            s.name
+        FROM therapist_pref tp
+        LEFT JOIN services s ON tp.service_id = s.id
+        WHERE tp.user_id = ${tmpData.id}
+      `;
       let tempTherapistData = await utils.executeQuery(therapistQuery);
       tmpData.preferences = tempTherapistData;
 

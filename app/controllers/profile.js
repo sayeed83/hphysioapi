@@ -144,3 +144,37 @@ exports.changePassword = async (req, res) => {
     utils.handleError(res, error)
   }
 }
+
+exports.profilePhoto = async (req, res) => {
+    try {
+      req = matchedData(req)
+      await saveProfilePhoto(req.user_id,req.profile_photo);
+      res.status(200).json(userId)
+    } catch (error) {
+      utils.handleError(res, error)
+    }
+}
+
+const saveProfilePhoto = async (userId, base64Data) => {
+    let attachment = base64Data.base64._z;
+    let type = attachment.split(';')[0].split('/')[1]; 
+    let buf = null;
+    if(attachment.split(';')[0].split('/')[1] != 'pdf') {
+        type = 'jpg';
+        contentType = 'image/jpeg';
+        buf = Buffer.from(attachment.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+    } 
+    if(attachment.split(';')[0].split('/')[1] == 'pdf') {
+        buf = Buffer.from(attachment.replace(/^data:application\/pdf;base64,/, ''), 'base64');
+    }
+    attachment = new Date().getTime() + "_" + userId + "."+type;
+    let filePath = `documents/profile/${userId}_${base64Data}.${type}`; //userId+"_"+base64Data.degree_id;
+    return new Promise(async (resolve, reject) => {
+        fs.writeFile(filePath, buf, (err) => {
+            if (err) return reject(err);
+            resolve(filePath);
+        });
+        
+    })
+    
+}
