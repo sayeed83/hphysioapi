@@ -119,9 +119,11 @@ exports.getProfile = async (req, res) => {
  */
 exports.updateProfile = async (req, res) => {
   try {
-    const id = await utils.isIDGood(req.user._id)
     req = matchedData(req)
-    res.status(200).json(await updateProfileInDB(req, id))
+    let fullName = req.first_name+" "+req.middle_name+" "+req.last_name;
+    let query = `UPDATE users SET full_name = '${fullName}',first_name = '${req.first_name}',last_name = '${req.last_name}',middle_name = '${req.middle_name}',dob='${req.dob}',city='${req.city}',state='${req.state}',mobile_no='${req.mobile_no}',password='${req.password}' WHERE id = ${req.user_id}`;
+    await utils.executeQuery(query); 
+    res.status(200).json(successData);
   } catch (error) {
     utils.handleError(res, error)
   }

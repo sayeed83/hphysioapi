@@ -28,14 +28,14 @@ router.get(
 /*
  * Update profile route
  */
-router.patch(
-  '/',
-  requireAuth,
-  AuthController.roleAuthorization(['user', 'admin']),
-  trimRequest.all,
-  validate.updateProfile,
-  controller.updateProfile
-)
+// router.patch(
+//   '/',
+//   requireAuth,
+//   AuthController.roleAuthorization(['user', 'admin']),
+//   trimRequest.all,
+//   validate.updateProfile,
+//   controller.updateProfile
+// )
 
 /*
  * Change password route
@@ -65,6 +65,15 @@ router.post(
     trimRequest.all,
     validate.updatePreferences,
     controller.updatePreferences
+)
+
+router.post(
+    '/updateProfile',
+    // requireAuth,
+    // AuthController.roleAuthorization(['user', 'admin']),
+    trimRequest.all,
+    validate.updateProfile,
+    controller.updateProfile
 )
 
 module.exports = router
