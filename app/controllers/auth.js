@@ -625,7 +625,6 @@ exports.login = async (req, res) => {
     let tmpData = null;
     if(tmpUserData.length > 0) {
       tmpData = tmpUserData[0];
-    //   const therapistQuery = `select tp.id,tp.user_id,tp.service_id,tp.service_charge,s.name from therapist_pref tp JOIN services s ON tp.user_id = s.id WHERE tp.user_id = ${tmpData.id}`;
       const therapistQuery = `
       SELECT
             tp.id,
@@ -641,9 +640,7 @@ exports.login = async (req, res) => {
       tmpData.preferences = tempTherapistData;
 
       const documentQuery = `select d.id,d.user_id,d.degree_id,d.file_path,md.displayName from documents d JOIN master_degrees md ON d.user_id = md.id WHERE d.user_id = ${tmpData.id}`;
-      console.log(" documentQuery ", documentQuery);
       let tempDocumentData = await utils.executeQuery(documentQuery);
-      console.log(" tempDocumentData ", tempDocumentData);
       for (let di = 0; di < tempDocumentData.length; di++) {
         const element = tempDocumentData[di];
         tempDocumentData[di].checked = true;

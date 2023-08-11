@@ -181,9 +181,8 @@ const saveProfilePhoto = async (userId, base64Data) => {
 exports.updatePreferences = async (req, res) => {
     try {
         req = matchedData(req);
-        await updatePreferencesFunc(req.user_id, req.preferences);
-        //   console.log(" req ", req.preferences);
-        //   await saveProfilePhoto(req.user_id,req.profile_photo);
+        let updatedData =  await updatePreferencesFunc(req.user_id, req.preferences);
+        successData.data = updatedData;
         res.status(200).json(successData);
     } catch (error) {
       utils.handleError(res, error)
@@ -220,8 +219,20 @@ const updatePreferencesFunc = async (userId, preferences) => {
         user_id=values(user_id),
         service_id=values(service_id)
     `;
-    let temData = await utils.executeQuery(sql, values);
-    return temData;
+    await utils.executeQuery(sql, values);
+    const therapistQuery = `
+      SELECT
+            tp.id,
+            tp.user_id,
+            tp.service_id,
+            tp.service_charge,
+            s.name
+        FROM therapist_pref tp
+        LEFT JOIN services s ON tp.service_id = s.id
+        WHERE tp.user_id = ${userId} AND tp.active = 1
+      `;
+    let tempTherapistData = await utils.executeQuery(therapistQuery);
+    return tempTherapistData;
 
     // let test = con.query(sql, [values], async function (error, result, fields) {
     //     if (error) {
