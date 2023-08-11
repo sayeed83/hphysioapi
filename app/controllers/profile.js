@@ -1,7 +1,11 @@
 const model = require('../models/user')
 const utils = require('../middleware/utils')
 const { matchedData } = require('express-validator')
-const auth = require('../middleware/auth')
+const auth = require('../middleware/auth');
+const fs = require('fs');
+const path = require('path'); // Import the 'path' module
+let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
+
 
 /*********************
  * Private functions *
@@ -147,34 +151,29 @@ exports.changePassword = async (req, res) => {
 
 exports.profilePhoto = async (req, res) => {
     try {
-      req = matchedData(req)
+      req = matchedData(req);
       await saveProfilePhoto(req.user_id,req.profile_photo);
-      res.status(200).json(userId)
+      res.status(200).json(successData)
     } catch (error) {
       utils.handleError(res, error)
     }
 }
 
 const saveProfilePhoto = async (userId, base64Data) => {
-    let attachment = base64Data.base64._z;
-    let type = attachment.split(';')[0].split('/')[1]; 
-    let buf = null;
-    if(attachment.split(';')[0].split('/')[1] != 'pdf') {
-        type = 'jpg';
-        contentType = 'image/jpeg';
-        buf = Buffer.from(attachment.replace(/^data:image\/\w+;base64,/, ""), 'base64');
-    } 
-    if(attachment.split(';')[0].split('/')[1] == 'pdf') {
-        buf = Buffer.from(attachment.replace(/^data:application\/pdf;base64,/, ''), 'base64');
-    }
-    attachment = new Date().getTime() + "_" + userId + "."+type;
-    let filePath = `documents/profile/${userId}_${base64Data}.${type}`; //userId+"_"+base64Data.degree_id;
-    return new Promise(async (resolve, reject) => {
-        fs.writeFile(filePath, buf, (err) => {
-            if (err) return reject(err);
-            resolve(filePath);
-        });
-        
-    })
+    const imageStoragePath = path.join(__dirname, '../../documents/', 'profile');
+    // const imageStoragePath = path.join(__dirname, 'images'); 
+    const imageBuffer = Buffer.from(base64Data, 'base64');
+    const filename = `${userId}.jpg`;
+    const filePath = path.join(imageStoragePath, filename); // Combine directory path and filename
+
+    fs.writeFile(filePath, imageBuffer, (err) => {
+        if (err) {
+            console.log(" Error ", err);
+        //   res.status(500).send('Error uploading image.');
+        } else {
+            return;
+        //   res.send('Image uploaded successfully.');
+        }
+    });
     
 }

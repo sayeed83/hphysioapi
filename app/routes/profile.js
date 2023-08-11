@@ -55,7 +55,7 @@ router.post(
     // AuthController.roleAuthorization(['user', 'admin']),
     trimRequest.all,
     validate.profilePhoto,
-    controller.changePassword
+    controller.profilePhoto
 )
 
 module.exports = router

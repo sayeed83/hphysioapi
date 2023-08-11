@@ -74,11 +74,22 @@ exports.changePassword = [
 ]
 
 exports.profilePhoto = [
-    check('profile_photo')
-      .optional()
-      .not()
-      .isEmpty()
-      .withMessage('IS_EMPTY'),
+      check('profile_photo')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .trim(),
+
+    check('user_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .trim(),
+    
     (req, res, next) => {
       validationResult(req, res, next)
     }
