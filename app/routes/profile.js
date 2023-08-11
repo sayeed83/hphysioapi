@@ -58,4 +58,13 @@ router.post(
     controller.profilePhoto
 )
 
+router.post(
+    '/updatePreferences',
+    // requireAuth,
+    // AuthController.roleAuthorization(['user', 'admin']),
+    trimRequest.all,
+    validate.updatePreferences,
+    controller.updatePreferences
+)
+
 module.exports = router

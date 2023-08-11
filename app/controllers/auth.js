@@ -635,13 +635,15 @@ exports.login = async (req, res) => {
             s.name
         FROM therapist_pref tp
         LEFT JOIN services s ON tp.service_id = s.id
-        WHERE tp.user_id = ${tmpData.id}
+        WHERE tp.user_id = ${tmpData.id} AND tp.active = 1
       `;
       let tempTherapistData = await utils.executeQuery(therapistQuery);
       tmpData.preferences = tempTherapistData;
 
       const documentQuery = `select d.id,d.user_id,d.degree_id,d.file_path,md.displayName from documents d JOIN master_degrees md ON d.user_id = md.id WHERE d.user_id = ${tmpData.id}`;
+      console.log(" documentQuery ", documentQuery);
       let tempDocumentData = await utils.executeQuery(documentQuery);
+      console.log(" tempDocumentData ", tempDocumentData);
       for (let di = 0; di < tempDocumentData.length; di++) {
         const element = tempDocumentData[di];
         tempDocumentData[di].checked = true;

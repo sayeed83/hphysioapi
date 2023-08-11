@@ -177,3 +177,62 @@ const saveProfilePhoto = async (userId, base64Data) => {
     });
     
 }
+
+exports.updatePreferences = async (req, res) => {
+    try {
+        req = matchedData(req);
+        await updatePreferencesFunc(req.user_id, req.preferences);
+        //   console.log(" req ", req.preferences);
+        //   await saveProfilePhoto(req.user_id,req.profile_photo);
+        res.status(200).json(successData);
+    } catch (error) {
+      utils.handleError(res, error)
+    }
+}
+
+const updatePreferencesFunc = async (userId, preferences) => {
+    let tempInsertArray = [];
+    for (let index = 0; index < preferences.length; index++) {
+        let tmpData = {};
+        // if(preferences[index].checked) {
+            tmpData.user_id = userId;
+            tmpData.service_id = preferences[index].id;
+            tmpData.service_charge = preferences[index].value;
+            tmpData.active = preferences[index].checked ? 1 : 0;
+            tempInsertArray.push(tmpData);
+        // }
+    }
+    // let keys = Object.keys(tempInsertArray[0]);
+    // let values = tempInsertArray.map(obj => keys.map(key => obj[key]));
+    // let sql = 'INSERT INTO therapist_pref(' + keys.join(',') + ') VALUES ? ';
+    // return new Promise(async (resolve, reject) => {
+    //     let temData = await utils.executeQuery(sql, values);
+    //     resolve(temData);
+    // })
+
+    let keys = Object.keys(tempInsertArray[0]);
+    let values = tempInsertArray.map(obj => keys.map(key => obj[key]));
+
+    let sql = 'INSERT INTO therapist_pref(`' + keys.join('`,`') + '`) VALUES ? ';
+    sql += ` ON DUPLICATE KEY UPDATE 
+        active=values(active),
+        service_charge=values(service_charge),
+        user_id=values(user_id),
+        service_id=values(service_id)
+    `;
+    let temData = await utils.executeQuery(sql, values);
+    return temData;
+
+    // let test = con.query(sql, [values], async function (error, result, fields) {
+    //     if (error) {
+    //         reject(error)
+    //     }
+    //     var rowIds = [];
+    //     if(result && result.insertId) {
+    //         for (var i = result.insertId; i < result.insertId + result.affectedRows; i++) {
+    //             rowIds.push(i);
+    //         }
+    //     }
+    //     resolve(rowIds);
+    // });
+}

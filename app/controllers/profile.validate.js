@@ -94,3 +94,20 @@ exports.profilePhoto = [
       validationResult(req, res, next)
     }
 ]
+
+exports.updatePreferences = [
+    check('preferences')
+    .optional(),
+
+  check('user_id')
+  .exists()
+  .withMessage('MISSING')
+  .not()
+  .isEmpty()
+  .withMessage('IS_EMPTY')
+  .trim(),
+  
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]

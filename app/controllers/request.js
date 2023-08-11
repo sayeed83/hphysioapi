@@ -186,7 +186,7 @@ exports.submitrequest = async (req, res) => {
   try {
     const locale = req.getLocale()
     req = matchedData(req);
-    const query = `select service_charge from therapist_pref where service_id = ${req?.service_id} AND user_id = ${req?.partner_id}`;
+    const query = `select service_charge from therapist_pref where service_id = ${req?.service_id} AND user_id = ${req?.partner_id} AND active = 1`;
     // console.log(" query ", query);
     let tempData = await utils.executeQuery(query);
     // console.log(" tempData ", tempData);
