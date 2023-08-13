@@ -213,7 +213,7 @@ exports.getfilterdata = async (req, res) => {
             u.rating,
             tp.service_id,
             tp.service_charge,
-            tp.id,
+            u.id,
             s.name as service_name,
             u.mobile_no
         FROM therapist_pref AS tp
