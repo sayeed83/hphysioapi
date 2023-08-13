@@ -101,35 +101,10 @@ exports.getHomedata = async (req, res) => {
       const locale = req.getLocale()
       req = matchedData(req)
 
-      const query = `select *
-      from category`;
+      const query = `select * from category`;
       
       let tempData = await utils.executeQuery(query);
       let arr = [];
-      // Array.prototype.forEach.call(tempData, element => {
-      //   console.log(element)
-      //   const query1 = `select ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
-      //                 from patient_services  as ps 
-      //                 LEFT JOIN users as u 
-      //                 ON ps.user_id = u.id
-      //                 LEFT JOIN services as s 
-      //                 ON ps.service_id = s.id
-                      
-      //                 WHERE partner_id = ${req.user_id} AND ps.cat_id = ${element.id}`;
-      //   let tempData1 = await utils.executeQuery(query1);
-      //   let arr1 = [];
-      //   Array.prototype.forEach.call(tempData1, newelement => {
-      //     arr1.push({
-      //       'id':newelement.id,
-      //       'service_name':newelement.service_name
-      //     });
-      //   })
-      //   arr.push({
-      //     'id':element.id,
-      //     'cat_name':element.cat_name,
-      //     'patient_services':arr1,
-      //   });
-      // });
       await Promise.all(tempData.map(async (element) => {
         const query1 = `select ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
                       from patient_services  as ps 
@@ -143,14 +118,27 @@ exports.getHomedata = async (req, res) => {
         let arr1 = [];
         await Promise.all(tempData1.map(async (newelement) => {
           let status = '';
-          if (newelement.booking_status == 1) {
-            status = 'Requested';
-          } else if (newelement.booking_status == 2) {
-            status = 'Appointment Scheduled';            
-          } else if (newelement.booking_status == 3) {
-            status = 'Rejected';            
-          } else if (newelement.booking_status == 4) {
-            status = 'Completed';            
+          if(newelement.cat_id == 2) {
+            if (newelement.booking_status == 1) {
+                status = 'Requested';
+            } else if (newelement.booking_status == 2) {
+                status = 'Appointment Scheduled';            
+            } else if (newelement.booking_status == 3) {
+                status = 'Rejected';            
+            } else if (newelement.booking_status == 4) {
+                status = 'Completed';            
+            }
+          }
+          if(newelement.cat_id == 1) {
+            if (newelement.booking_status == 1) {
+                status = 'Incomplete';
+            } else if (newelement.booking_status == 2) {
+                status = 'Pending';            
+            } else if (newelement.booking_status == 3) {
+                status = 'Rejected';            
+            } else if (newelement.booking_status == 4) {
+                status = 'Completed';            
+            }
           }
 
           arr1.push({
@@ -170,7 +158,6 @@ exports.getHomedata = async (req, res) => {
                   'address':newelement.address,
                 });
         }));
-        console.log(" arr1 ", arr1);
         arr.push({
           'id':element.id,
           'cat_name':element.cat_name,
@@ -181,8 +168,6 @@ exports.getHomedata = async (req, res) => {
       successData.data = arr;
       successData.totalRecord = tempData.length;
       res.status(200).json(successData);
-
-      
     
   } catch (error) {
     utils.handleError(res, error)
@@ -241,7 +226,6 @@ exports.getCustReq = async (req, res) => {
                       LEFT JOIN users as u ON ps.partner_id = u.id
                       LEFT JOIN services as s ON ps.service_id = s.id
                       WHERE user_id = ${req.user_id} AND ps.cat_id = ${element.id}`;
-        // console.log(" query1 ", query1);
         let tempData1 = await utils.executeQuery(query1);
         let arr1 = [];
         await Promise.all(tempData1.map(async (newelement) => {
@@ -261,7 +245,7 @@ exports.getCustReq = async (req, res) => {
 
           if(newelement.cat_id == 1) {
             if (newelement.booking_status == 1) {
-                status = 'In Complete';
+                status = 'Incomplete';
             } else if (newelement.booking_status == 2) {
                 status = 'Pending';            
             } else if (newelement.booking_status == 3) {
@@ -298,7 +282,6 @@ exports.getCustReq = async (req, res) => {
         });
         
       }));
-        console.log(arr);
       successData.data = arr;
       successData.totalRecord = tempData.length;
       res.status(200).json(successData);

@@ -197,11 +197,6 @@ exports.getfilterdata = async (req, res) => {
     if(req?.from && req?.to) { // Prive Range
       price_range = `tp.service_charge >= ${req?.from} AND tp.service_charge <= ${req?.to}`;
     } 
-    // if(req?.uid) {
-    //   query1 = `SELECT * FROM therapist_pref as tp LEFT JOIN users as u ON tp.user_id=u.id WHERE u.id=${req.uid}`;
-    // } else {
-    //   query1 = `SELECT * FROM therapist_pref as tp LEFT JOIN users as u ON tp.user_id=u.id WHERE service_id='${req?.service_id}' AND u.full_name like '%${req?.search_field || ''}%' AND ${price_range} ${filter}`;      
-    // }
     let uidFilter = ``;
     if(req?.uid) {
         uidFilter = ` AND u.id=${req.uid}`;
