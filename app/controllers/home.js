@@ -223,7 +223,7 @@ exports.getCustReq = async (req, res) => {
       let tempData = await utils.executeQuery(query);
       let arr = [];
       await Promise.all(tempData.map(async (element) => {
-        const query1 = `select u.rating,ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,ps.price,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
+        const query1 = `select ps.otp_code,u.rating,ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,ps.price,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
                       from patient_services  as ps 
                       LEFT JOIN users as u ON ps.partner_id = u.id
                       LEFT JOIN services as s ON ps.service_id = s.id
@@ -274,7 +274,8 @@ exports.getCustReq = async (req, res) => {
                   'city':newelement.city,
                   'state':newelement.state,
                   'address':newelement.address,
-                  'price':newelement.price
+                  'price':newelement.price,
+                  'otp_code':newelement.otp_code
                 });
         }));
         arr.push({
