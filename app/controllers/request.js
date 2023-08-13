@@ -142,12 +142,14 @@ exports.submitrequest = async (req, res) => {
   try {
     const locale = req.getLocale()
     req = matchedData(req);
-    const query = `select service_charge from therapist_pref where service_id = ${req?.service_id} AND user_id = ${req?.partner_id} AND active = 1`;
-    // console.log(" query ", query);
+    const query = `select service_charge from therapist_pref where service_id = ${req?.service_id} AND user_id = ${req?.partner_id}`;
+    console.log(" query ", query);
     let tempData = await utils.executeQuery(query);
     // console.log(" tempData ", tempData);
     // res.status(200).json(successData);
-    const otp_code = Math.floor(Math.random() * (1000 - 9999 + 1)) + min;
+    console.log(" req ", req);
+    const otp_code = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+    console.log(" otp_code ", otp_code);
     let insertQeury = `INSERT INTO patient_services(
                         service_id,
                         partner_id,
@@ -174,7 +176,7 @@ exports.submitrequest = async (req, res) => {
                         '${req?.description}',
                         NULL,
                         '1',
-                        '2023-05-12 16:36:35',
+                        '2023-05-12 16:36:35', 
                         '2023-05-12 16:36:35'
                       )`;
     return new Promise(async (resolve, reject) => {
