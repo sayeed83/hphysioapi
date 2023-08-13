@@ -197,12 +197,31 @@ exports.getfilterdata = async (req, res) => {
     if(req?.from && req?.to) { // Prive Range
       price_range = `tp.service_charge >= ${req?.from} AND tp.service_charge <= ${req?.to}`;
     } 
-    let query1;
+    // if(req?.uid) {
+    //   query1 = `SELECT * FROM therapist_pref as tp LEFT JOIN users as u ON tp.user_id=u.id WHERE u.id=${req.uid}`;
+    // } else {
+    //   query1 = `SELECT * FROM therapist_pref as tp LEFT JOIN users as u ON tp.user_id=u.id WHERE service_id='${req?.service_id}' AND u.full_name like '%${req?.search_field || ''}%' AND ${price_range} ${filter}`;      
+    // }
+    let uidFilter = ``;
     if(req?.uid) {
-      query1 = `SELECT * FROM therapist_pref as tp LEFT JOIN users as u ON tp.user_id=u.id WHERE u.id=5`;
-    } else {
-      query1 = `SELECT * FROM therapist_pref as tp LEFT JOIN users as u ON tp.user_id=u.id WHERE service_id='${req?.service_id}' AND u.full_name like '%${req?.search_field || ''}%' AND ${price_range} ${filter}`;      
+        uidFilter = ` AND u.id=${req.uid}`;
     }
+    
+
+    let query1 = `SELECT
+            u.full_name,
+            u.rating,
+            tp.service_id,
+            tp.service_charge,
+            tp.id,
+            s.name as service_name,
+            u.mobile_no
+        FROM therapist_pref AS tp
+        LEFT JOIN users AS u ON tp.user_id = u.id
+        LEFT JOIN services AS s ON s.id = tp.service_id
+        WHERE service_id='${req?.service_id}' AND u.full_name like '%${req?.search_field || ''}%' AND ${price_range} ${uidFilter} ${filter}
+    `;
+        console.log(" query1 ", query1);
     let tempData1 = await utils.executeQuery(query1);
     let arr1 = []
     await Promise.all(tempData1?.map(async (nlist) => {
@@ -210,6 +229,9 @@ exports.getfilterdata = async (req, res) => {
         'id': nlist?.id,
         'service_charge': nlist?.service_charge,
         'name': nlist?.full_name ?? '',
+        'service_id': nlist?.service_id,
+        'mobile_no': nlist?.mobile_no,
+        'rating': nlist?.rating
       })
     }));
 

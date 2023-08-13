@@ -5,50 +5,6 @@ const db = require('../middleware/db')
 const { json } = require('body-parser')
 let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
 
-/*********************
- * Private functions *
- *********************/
-
-/**
- * Checks if a city already exists excluding itself
- * @param {string} id - id of item
- * @param {string} name - name of item
- */
-const cityExistsExcludingItself = async (id, name) => {
-  return new Promise((resolve, reject) => {
-    model.findOne(
-      {
-        name,
-        _id: {
-          $ne: id
-        }
-      },
-      (err, item) => {
-        utils.itemAlreadyExists(err, item, reject, 'CITY_ALREADY_EXISTS')
-        resolve(false)
-      }
-    )
-  })
-}
-
-/**
- * Checks if a city already exists in database
- * @param {string} name - name of item
- */
-const cityExists = async (name) => {
-  return new Promise((resolve, reject) => {
-    model.findOne(
-      {
-        name
-      },
-      (err, item) => {
-        utils.itemAlreadyExists(err, item, reject, 'CITY_ALREADY_EXISTS')
-        resolve(false)
-      }
-    )
-  })
-}
-
 /**
  * Gets all items from database
  */
