@@ -193,8 +193,10 @@ exports.submitrequest = async (req, res) => {
 exports.updateRequestStatus = async (req, res) => {
   try {
     req = matchedData(req)
-    let query = `UPDATE patient_services SET booking_status = '${req.status}' WHERE id = ${req.id}`;
-      await utils.executeQuery(query);
+    let query = `UPDATE patient_services SET booking_status = '${req.status}' WHERE id = ${req.id} AND otp_code = ${req.otp_code}`;
+      let response = await utils.executeQuery(query);
+        //   console.log(" response ", response.affectedRows);
+      successData.affectedRows = response.affectedRows;
       res.status(200).json(successData);
   } catch (error) {
     utils.handleError(res, error)
