@@ -207,7 +207,7 @@ exports.getfilterdata = async (req, res) => {
         uidFilter = ` AND u.id=${req.uid}`;
     }
     
-
+ 
     let query1 = `SELECT
             u.full_name,
             u.rating,

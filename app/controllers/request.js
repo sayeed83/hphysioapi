@@ -147,7 +147,6 @@ exports.submitrequest = async (req, res) => {
     let tempData = await utils.executeQuery(query);
     // console.log(" tempData ", tempData);
     // res.status(200).json(successData);
-    console.log(" req ", req);
     const otp_code = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
     console.log(" otp_code ", otp_code);
     let insertQeury = `INSERT INTO patient_services(
@@ -170,7 +169,7 @@ exports.submitrequest = async (req, res) => {
                         '${req?.user_id}',
                         '${req?.cat_id}',
                         ${tempData[0].service_charge},
-                        ${otp_code}
+                        ${otp_code},
                         '${req?.booking_date}',
                         '${req?.booking_time}',
                         '${req?.description}',
@@ -182,7 +181,6 @@ exports.submitrequest = async (req, res) => {
     return new Promise(async (resolve, reject) => {
       let temData = await utils.executeQuery(insertQeury);
       temData.otp_code = otp_code;
-      console.log(" temData ==== ", temData.insertId);
       res.status(200).json(temData);
     //   resolve(temData.insertId);
     })
