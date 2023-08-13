@@ -221,7 +221,6 @@ exports.getfilterdata = async (req, res) => {
         LEFT JOIN services AS s ON s.id = tp.service_id
         WHERE service_id='${req?.service_id}' AND u.full_name like '%${req?.search_field || ''}%' AND ${price_range} ${uidFilter} ${filter}
     `;
-        console.log(" query1 ", query1);
     let tempData1 = await utils.executeQuery(query1);
     let arr1 = []
     await Promise.all(tempData1?.map(async (nlist) => {
@@ -231,7 +230,8 @@ exports.getfilterdata = async (req, res) => {
         'name': nlist?.full_name ?? '',
         'service_id': nlist?.service_id,
         'mobile_no': nlist?.mobile_no,
-        'rating': nlist?.rating
+        'rating': nlist?.rating,
+        'service_name': nlist?.service_name
       })
     }));
 
