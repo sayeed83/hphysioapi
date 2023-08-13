@@ -231,31 +231,46 @@ exports.getCustReq = async (req, res) => {
       const locale = req.getLocale()
       req = matchedData(req)
 
-      const query = `select *
-      from category`;
+      const query = `select * from category`;
       
       let tempData = await utils.executeQuery(query);
       let arr = [];
       await Promise.all(tempData.map(async (element) => {
-        const query1 = `select ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,ps.price,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
+        const query1 = `select u.rating,ps.id,ps.service_id,s.name as service_name,ps.cat_id,ps.user_id,ps.booking_date,ps.booking_time,ps.booking_status,ps.price,u.full_name,u.email,u.mobile_no,u.dob,u.city,u.state,u.address,u.status_id,ps.created_at,ps.updated_at
                       from patient_services  as ps 
                       LEFT JOIN users as u ON ps.partner_id = u.id
                       LEFT JOIN services as s ON ps.service_id = s.id
                       WHERE user_id = ${req.user_id} AND ps.cat_id = ${element.id}`;
+        // console.log(" query1 ", query1);
         let tempData1 = await utils.executeQuery(query1);
         let arr1 = [];
         await Promise.all(tempData1.map(async (newelement) => {
           let status = '';
 
-          if (newelement.booking_status == 1) {
-            status = 'Requested';
-          } else if (newelement.booking_status == 2) {
-            status = 'Confirmation Pending';            
-          } else if (newelement.booking_status == 3) {
-            status = 'Rejected';            
-          } else if (newelement.booking_status == 4) {
-            status = 'Completed';            
+          if(newelement.cat_id == 2) {
+            if (newelement.booking_status == 1) {
+                status = 'Requested';
+            } else if (newelement.booking_status == 2) {
+                status = 'Confirmation Pending';            
+            } else if (newelement.booking_status == 3) {
+                status = 'Rejected';            
+            } else if (newelement.booking_status == 4) {
+                status = 'Completed';            
+            }
           }
+
+          if(newelement.cat_id == 1) {
+            if (newelement.booking_status == 1) {
+                status = 'In Complete';
+            } else if (newelement.booking_status == 2) {
+                status = 'Pending';            
+            } else if (newelement.booking_status == 3) {
+                status = 'Rejected';            
+            } else if (newelement.booking_status == 4) {
+                status = 'Completed';            
+            }
+          }
+          
 
           arr1.push({
                   'id':newelement.id,
@@ -264,6 +279,7 @@ exports.getCustReq = async (req, res) => {
                   'booing_status':status,
                   'booking_date':newelement.booking_date,
                   'booking_time':newelement.booking_time,
+                  'rating':newelement.rating,
                   'partner_id':newelement.user_id,
                   'doctor_name':newelement.full_name,
                   'email':newelement.email,
