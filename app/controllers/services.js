@@ -102,6 +102,8 @@ exports.getServiceAddress = async (req, res) => {
     try {
         const query = `SELECT
                 sa.id,
+                sa.flat,
+                sa.landmark,
                 sa.user_id,
                 sa.default_address,
                 sa.full_address,
