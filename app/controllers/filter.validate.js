@@ -18,6 +18,18 @@ exports.getfilterdata = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
+  check('address_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
+  check('area_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
   check('search_field')
     .optional(),
   check('filter')

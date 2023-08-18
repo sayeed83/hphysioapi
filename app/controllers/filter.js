@@ -186,7 +186,8 @@ exports.getHomedata = async (req, res) => {
 exports.getfilterdata = async (req, res) => {
   try {
     const locale = req.getLocale()
-    req = matchedData(req)
+    req = matchedData(req);
+    console.log(" req ", req);
     let filter = ``;
     if(req?.filter == 1) { // High to low
       filter = `ORDER BY tp.service_charge DESC`;
@@ -201,7 +202,6 @@ exports.getfilterdata = async (req, res) => {
     if(req?.uid) {
         uidFilter = ` AND u.id=${req.uid}`;
     }
-    
  
     let query1 = `SELECT
             u.full_name,
@@ -210,12 +210,15 @@ exports.getfilterdata = async (req, res) => {
             tp.service_charge,
             u.id,
             s.name as service_name,
-            u.mobile_no
+            u.mobile_no,
+            sa.area_id
         FROM therapist_pref AS tp
         LEFT JOIN users AS u ON tp.user_id = u.id
         LEFT JOIN services AS s ON s.id = tp.service_id
-        WHERE service_id='${req?.service_id}' AND u.full_name like '%${req?.search_field || ''}%' AND ${price_range} ${uidFilter} ${filter}
+        LEFT JOIN service_address sa ON u.id = sa.user_id
+        WHERE service_id='${req?.service_id}' AND sa.area_id = ${req.area_id} AND ${price_range} ${uidFilter} GROUP BY tp.id, sa.area_id ${filter}
     `;
+    // console.log(" query1 ", query1);
     let tempData1 = await utils.executeQuery(query1);
     let arr1 = []
     await Promise.all(tempData1?.map(async (nlist) => {

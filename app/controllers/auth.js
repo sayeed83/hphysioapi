@@ -856,7 +856,6 @@ exports.freeExpired = async (req, res) => {
       req = matchedData(req);
       let query = `UPDATE users SET free_expired = 0 WHERE users.id = ${req.user_id}`;
       await utils.executeQuery(query);
-      console.log(" req ", req);
       res.status(200).json(successData);
   
     } catch (error) {
