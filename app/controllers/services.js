@@ -65,15 +65,20 @@ exports.getAllItems = async (req, res) => {
 exports.addPatientServiceAddress = async (req, res) => {
     try {
         req = matchedData(req)
-       console.log(" req ", req);
-       if(req.default_address) {
+       if(req.default_address && req.id) {
             let updateQuery = `UPDATE service_address SET default_address = 0 WHERE user_id = ${req.user_id}`;
             await utils.executeQuery(updateQuery);
+            let updateDefaultQuery = `UPDATE service_address SET default_address = 1 WHERE id = ${req.id}`;
+            await utils.executeQuery(updateDefaultQuery);
        }
-       let query = `INSERT INTO service_address (user_id, default_address, full_address, area_id, pincode, city_id, flat, landmark) 
-       VALUES (${req.user_id}, ${req.default_address}, '${req.full_address}', ${req.area_id}, '${req.pincode}', ${req.city_id}, '${req.flat}', '${req.landmark}')`;
-       await utils.executeQuery(query);
+       else {
+            let query = `INSERT INTO service_address (user_id, default_address, full_address, area_id, pincode, city_id, flat, landmark) 
+        VALUES (${req.user_id}, ${req.default_address}, '${req.full_address}', ${req.area_id}, '${req.pincode}', ${req.city_id}, '${req.flat}', '${req.landmark}')`;
+        await utils.executeQuery(query);
+        
+       }
        res.status(200).json(successData);
+       
     } catch (error) {
       utils.handleError(res, error)
     }

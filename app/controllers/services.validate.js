@@ -36,6 +36,7 @@ exports.addPatientServiceAddress = [
     check('pincode'),
     check('flat'),
     check('landmark'),
+    check('id').optional(),
     (req, res, next) => {
       validationResult(req, res, next)
     }
