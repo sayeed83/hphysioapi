@@ -318,7 +318,6 @@ exports.createItem = async (req, res) => {
     // Gets locale from header 'Accept-Language'
     const locale = req.getLocale();
     req = matchedData(req);
-    
     const doesEmailExists = await emailer.emailExists(req.email)
     if (!doesEmailExists) {
         // console.log(" req.preferences ", req.preferences);
@@ -327,7 +326,7 @@ exports.createItem = async (req, res) => {
             if(req.preferences) {
                 await createPreference(userId, req.preferences);
             }
-            if(req.docs) {
+            if(req.docs && req.docs.length > 0) {
                 await createDocument(userId, req.docs);
             }
             if(req.service_city && req.service_area) {
