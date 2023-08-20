@@ -4,6 +4,7 @@ const utils = require('../middleware/utils')
 const db = require('../middleware/db')
 const { json } = require('body-parser')
 let successData = {message: 'Success', totalRecord: 0, data: [], status: 200}
+const NULL_VALUE = null;
 
 /**
  * Gets all items from database
@@ -143,17 +144,17 @@ exports.submitrequest = async (req, res) => {
     const locale = req.getLocale()
     req = matchedData(req);
     const query = `select service_charge from therapist_pref where service_id = ${req?.service_id} AND user_id = ${req?.partner_id}`;
-    console.log(" query ", query);
+    // console.log(" query ", query);
     let tempData = await utils.executeQuery(query);
     // console.log(" tempData ", tempData);
     // res.status(200).json(successData);
     const otp_code = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
-    console.log(" otp_code ", otp_code);
+    // console.log(" req?.address_id ", req?.address_id); 
     let insertQeury = `INSERT INTO patient_services(
                         service_id,
                         partner_id,
                         user_id,
-                        addrss_id,
+                        address_id,
                         cat_id,
                         price,
                         otp_code,
@@ -168,7 +169,7 @@ exports.submitrequest = async (req, res) => {
                         '${req?.service_id}',
                         '${req?.partner_id}',
                         '${req?.user_id}',
-                        '${req?.address_id}',
+                        ${req?.address_id || NULL_VALUE},
                         '${req?.cat_id}',
                         ${tempData[0].service_charge},
                         ${otp_code},

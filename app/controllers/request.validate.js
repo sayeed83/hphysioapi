@@ -30,6 +30,12 @@ exports.submitrequest = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
+    check('address_id')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY'),
   check('description')
     .exists()
     .withMessage('MISSING')
